@@ -7,6 +7,6 @@ import (
 
 //Service struct
 type Service struct {
-	db   *mongo.Database
-	repo infrastructure.MongoRepository
+	DB   *mongo.Database
+	Repo infrastructure.MongoRepository
 }
