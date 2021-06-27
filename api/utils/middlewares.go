@@ -9,7 +9,7 @@ import (
 	"github.com/gorilla/context"
 )
 
-//JWTMiddleware is a middleware function to check the authorization JWT Bearer token in header of requestt
+//JWTMiddleware is a middleware function to check the authorization JWT Bearer token header of the request
 func JWTMiddleware(next http.Handler, secret string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authorizationHeader := r.Header.Get("authorization")
