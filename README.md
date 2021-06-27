@@ -1,1 +1,1 @@
-# scv-mongo-framework
+# scv-go-framework
