@@ -17,3 +17,8 @@ go get github.com/scanet9/scv-go-framework
 ## Usage example:
 [go-mongo-restapi](https://github.com/scanet9/go-mongo-restapi)
 
+## Author
+- Sergi Canet Vela
+
+## License
+This project is licensed under the terms of the MIT license.
