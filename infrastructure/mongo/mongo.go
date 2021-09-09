@@ -1,4 +1,4 @@
-package infrastructure
+package mongo
 
 import (
 	"context"
@@ -7,8 +7,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// ConnectDB connects to mongo database
-func ConnectDB(name string, connection string) *mongo.Database {
+// ConnectMongoDB connects to MongoDB
+func ConnectMongoDB(name string, connection string) *mongo.Database {
 
 	clientOptions := options.Client().ApplyURI(connection)
 

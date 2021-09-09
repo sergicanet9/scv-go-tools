@@ -1,4 +1,4 @@
-package infrastructure
+package mongo
 
 import (
 	"context"
@@ -8,19 +8,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-// Repository interface represents a repository
-type Repository interface {
-	Create(ctx context.Context, entity interface{}) primitive.ObjectID
-	Get(ctx context.Context, filter primitive.M) []interface{}
-	GetByID(ctx context.Context, ID string) interface{}
-	Update(ctx context.Context, ID string, entity interface{})
-	Delete(ctx context.Context, ID string)
-}
-
 // MongoRepository struct of a mongo repository
 type MongoRepository struct {
 	collection  *mongo.Collection
-	constructor func() interface{} // constructor of the repository entity
+	constructor func() interface{} // constructor of the repository target entity
 }
 
 // NewMongoRepository creates a mongodb repository
