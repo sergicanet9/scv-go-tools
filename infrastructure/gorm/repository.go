@@ -9,17 +9,24 @@ import (
 
 type GormRepository struct {
 	db           *gorm.DB
-	constructor  func() interface{}
+	target       interface{}
 	defaultJoins []string
 }
 
 // NewGormRepository returns a new base repository that implements TransactionRepository
-func NewGormRepository(db *gorm.DB, constructor func() interface{}, defaultJoins ...string) *GormRepository {
+func NewGormRepository(db *gorm.DB, target interface{}, defaultJoins ...string) *GormRepository {
 	return &GormRepository{
 		db,
-		constructor, // constructor of the repository target entity
+		target,
 		defaultJoins,
 	}
+}
+
+func (r *GormRepository) AtomicTransaction(tx func(tx *gorm.DB) error) error {
+	if err := r.db.Transaction(tx); err != nil {
+		return fmt.Errorf("error: %w", err)
+	}
+	return nil
 }
 
 func (r *GormRepository) Create(entity interface{}, include ...string) (interface{}, error) {
@@ -51,12 +58,12 @@ func (r *GormRepository) Update(ID int, entity interface{}, include ...string) e
 	}
 	json.Unmarshal(bytes, &updates)
 
-	res := r.dbWithPreloads(include).First(r.constructor(), ID).Updates(updates)
+	res := r.dbWithPreloads(include).First(r.target, ID).Updates(updates)
 	return r.handleError(res)
 }
 
 func (r *GormRepository) Delete(ID int, include ...string) error {
-	res := r.dbWithPreloads(include).Delete(r.constructor(), ID)
+	res := r.dbWithPreloads(include).Delete(r.target, ID)
 	return r.handleError(res)
 }
 

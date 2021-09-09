@@ -10,15 +10,15 @@ import (
 
 // MongoRepository struct of a mongo repository
 type MongoRepository struct {
-	collection  *mongo.Collection
-	constructor func() interface{} // constructor of the repository target entity
+	collection *mongo.Collection
+	target     interface{}
 }
 
 // NewMongoRepository creates a mongodb repository
-func NewMongoRepository(collection *mongo.Collection, constructor func() interface{}) *MongoRepository {
+func NewMongoRepository(collection *mongo.Collection, target interface{}) *MongoRepository {
 	return &MongoRepository{
 		collection,
-		constructor,
+		target,
 	}
 }
 
@@ -41,7 +41,7 @@ func (r *MongoRepository) Get(ctx context.Context, filter primitive.M) []interfa
 	}
 
 	for cur.Next(ctx) {
-		entry := r.constructor()
+		entry := r.target
 		if err := cur.Decode(entry); err != nil {
 			panic(err)
 		}
@@ -53,7 +53,7 @@ func (r *MongoRepository) Get(ctx context.Context, filter primitive.M) []interfa
 
 // GetByID get the document with the specified ID in the repository's collection
 func (r *MongoRepository) GetByID(ctx context.Context, ID string) interface{} {
-	result := r.constructor()
+	result := r.target
 
 	_id, err := primitive.ObjectIDFromHex(ID)
 	if err != nil {
