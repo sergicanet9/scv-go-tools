@@ -1,4 +1,4 @@
-module github.com/scanet9/scv-go-framework
+module github.com/scanet9/scv-go-framework/v2
 
 go 1.15
 
