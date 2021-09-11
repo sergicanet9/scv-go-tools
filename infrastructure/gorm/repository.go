@@ -30,7 +30,7 @@ func (r *GormRepository) AtomicTransaction(tx func(tx *gorm.DB) error) error {
 }
 
 func (r *GormRepository) Create(entity interface{}, include ...string) (interface{}, error) {
-	res := r.dbWithPreloads(include).Create(entity)
+	res := r.dbWithPreloads(include).Model(&entity).Create(entity)
 	return entity, r.handleError(res)
 }
 

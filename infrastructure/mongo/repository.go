@@ -23,85 +23,87 @@ func NewMongoRepository(collection *mongo.Collection, target interface{}) *Mongo
 }
 
 // Create creates an entity in the repository's collection
-func (r *MongoRepository) Create(ctx context.Context, entity interface{}) primitive.ObjectID {
+func (r *MongoRepository) Create(ctx context.Context, entity interface{}) (primitive.ObjectID, error) {
 	result, err := r.collection.InsertOne(ctx, entity)
 	if err != nil {
-		panic(err)
+		return primitive.NilObjectID, err
 	}
-	return result.InsertedID.(primitive.ObjectID)
+	return result.InsertedID.(primitive.ObjectID), nil
 }
 
 // Get gets the documents mathing the filter in the repository's collection
-func (r *MongoRepository) Get(ctx context.Context, filter primitive.M) []interface{} {
+func (r *MongoRepository) Get(ctx context.Context, filter primitive.M) ([]interface{}, error) {
 	var result []interface{}
 
 	cur, err := r.collection.Find(ctx, filter)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	for cur.Next(ctx) {
 		entry := r.target
 		if err := cur.Decode(entry); err != nil {
-			panic(err)
+			return nil, err
 		}
 		result = append(result, entry)
 	}
 
-	return result
+	return result, nil
 }
 
 // GetByID get the document with the specified ID in the repository's collection
-func (r *MongoRepository) GetByID(ctx context.Context, ID string) interface{} {
+func (r *MongoRepository) GetByID(ctx context.Context, ID string) (interface{}, error) {
 	result := r.target
 
 	_id, err := primitive.ObjectIDFromHex(ID)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	filter := bson.M{"_id": _id}
 	err = r.collection.FindOne(ctx, filter).Decode(result)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	return result
+	return result, nil
 }
 
 // Update updates the document with the specified ID in the repository's collection
-func (r *MongoRepository) Update(ctx context.Context, ID string, entity interface{}) {
+func (r *MongoRepository) Update(ctx context.Context, ID string, entity interface{}) error {
 	_id, err := primitive.ObjectIDFromHex(ID)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	filter := bson.M{"_id": _id}
 	update := bson.M{"$set": entity}
 	result, err := r.collection.UpdateOne(ctx, filter, update)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	if result.ModifiedCount < 1 {
-		panic(mongo.ErrNoDocuments)
+		return mongo.ErrNoDocuments
 	}
+	return nil
 }
 
 // Delete deletes the document with the specified ID in the repository's collection
-func (r *MongoRepository) Delete(ctx context.Context, ID string) {
+func (r *MongoRepository) Delete(ctx context.Context, ID string) error {
 	_id, err := primitive.ObjectIDFromHex(ID)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	filter := bson.M{"_id": _id}
 	result, err := r.collection.DeleteOne(ctx, filter)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	if result.DeletedCount < 1 {
-		panic(mongo.ErrNoDocuments)
+		return mongo.ErrNoDocuments
 	}
+	return nil
 }
