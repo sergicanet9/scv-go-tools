@@ -4,7 +4,7 @@ Base framework for creating REST APIs in Go.
 
 ## Included packages
 - INFRASTRUCTURE/MONGO: provides MongoDB connection function and Repository Pattern with CRUD operations using the official [mongo-driver](https://github.com/mongodb/mongo-go-driver).
-- INFRASTRUCTURE/GORM: provides Postgres connection function and Repository Pattern with CRUD operations using [GORM](https://gorm.io).
+- INFRASTRUCTURE/GORM: provides Postgres connection function.
 
 - API/UTILS: provides JSON success/error responses and Middlewares for error handling and JWT token-based authorization.
 

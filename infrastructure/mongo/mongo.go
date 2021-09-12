@@ -8,17 +8,17 @@ import (
 )
 
 // ConnectMongoDB connects to MongoDB
-func ConnectMongoDB(name string, connection string) *mongo.Database {
+func ConnectMongoDB(name string, connection string) (*mongo.Database, error) {
 
 	clientOptions := options.Client().ApplyURI(connection)
 
 	client, err := mongo.Connect(context.Background(), clientOptions)
 
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	database := client.Database(name)
 
-	return database
+	return database, nil
 }
