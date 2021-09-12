@@ -35,7 +35,11 @@ func (r *GormRepository) Create(entity interface{}, include ...string) (interfac
 }
 
 func (r *GormRepository) Get(filter map[string]interface{}, include ...string) (result []interface{}, _ error) {
-	res := r.dbWithPreloads(include).Model(r.target).Where(&filter).Find(&result)
+	res := r.dbWithPreloads(include).Model(r.target).Where(filter).Find(&result)
+	return result, r.handleError(res)
+}
+func (r *GormRepository) Get2(query string, params map[string]interface{}, include ...string) (result []interface{}, _ error) {
+	res := r.dbWithPreloads(include).Model(r.target).Where(query, params).Find(&result)
 	return result, r.handleError(res)
 }
 
