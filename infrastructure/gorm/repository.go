@@ -1,4 +1,4 @@
-package gorm
+package infrastructure
 
 import (
 	"encoding/json"
@@ -30,17 +30,17 @@ func (r *GormRepository) AtomicTransaction(tx func(tx *gorm.DB) error) error {
 }
 
 func (r *GormRepository) Create(entity interface{}, include ...string) (interface{}, error) {
-	res := r.dbWithPreloads(include).Model(&entity).Create(entity)
+	res := r.dbWithPreloads(include).Model(r.target).Create(entity)
 	return entity, r.handleError(res)
 }
 
 func (r *GormRepository) Get(filter interface{}, include ...string) (result []interface{}, _ error) {
-	res := r.dbWithPreloads(include).Where(filter).Find(result)
+	res := r.dbWithPreloads(include).Model(r.target).Where(filter).Find(result)
 	return result, r.handleError(res)
 }
 
 func (r *GormRepository) GetByID(ID int, include ...string) (result interface{}, _ error) {
-	res := r.dbWithPreloads(include).First(result, ID)
+	res := r.dbWithPreloads(include).Model(r.target).First(result, ID)
 	return result, r.handleError(res)
 }
 

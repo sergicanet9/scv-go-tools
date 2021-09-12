@@ -1,4 +1,4 @@
-package mongo
+package infrastructure
 
 import (
 	"context"
