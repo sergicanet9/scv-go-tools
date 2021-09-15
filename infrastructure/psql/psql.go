@@ -2,6 +2,8 @@ package infrastructure
 
 import (
 	"database/sql"
+
+	_ "github.com/lib/pq" // postgres driver, needs to be imported
 )
 
 //ConnectPsqlDB connect to PostgresDB
