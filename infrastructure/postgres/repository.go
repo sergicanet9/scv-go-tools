@@ -5,8 +5,8 @@ import (
 	"database/sql"
 )
 
-// PsqlRepository interface represents a postgres repository
-type PsqlRepository interface {
+// PostgresRepository interface represents a postgres repository
+type PostgresRepository interface {
 	Create(ctx context.Context, entity interface{}) (interface{}, error)
 	Get(ctx context.Context, where string) (interface{}, error)
 	GetByID(ctx context.Context, ID int) (interface{}, error)

@@ -6,8 +6,8 @@ import (
 	_ "github.com/lib/pq" // postgres driver, needs to be imported
 )
 
-//ConnectPsqlDB connect to PostgresDB
-func ConnectPsqlDB(connection string) (*sql.DB, error) {
+//ConnectPostgresDB connect to PostgresDB
+func ConnectPostgresDB(connection string) (*sql.DB, error) {
 	db, err := sql.Open("postgres", connection)
 	if err != nil {
 		return nil, err
