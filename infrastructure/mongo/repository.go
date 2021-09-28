@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"context"
+	"reflect"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -41,7 +42,7 @@ func (r *MongoRepository) Get(ctx context.Context, filter primitive.M) ([]interf
 	}
 
 	for cur.Next(ctx) {
-		entry := r.target
+		entry := reflect.New(reflect.TypeOf(r.target)).Interface()
 		if err := cur.Decode(entry); err != nil {
 			return nil, err
 		}
