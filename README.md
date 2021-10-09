@@ -17,9 +17,9 @@ go get github.com/scanet9/scv-go-framework
 ```
 
 ## Usage examples
-[go-mongo-restapi](https://github.com/scanet9/go-mongo-restapi)
+[go-mongo-restapi](https://github.com/sergicanet9/go-mongo-restapi)
 <br />
-[go-postgres-restapi](https://github.com/scanet9/go-postgres-restapi)
+[go-postgres-restapi](https://github.com/sergicanet9/go-postgres-restapi)
 
 ## Author
 Sergi Canet Vela
