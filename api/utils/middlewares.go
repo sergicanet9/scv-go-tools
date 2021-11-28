@@ -23,18 +23,18 @@ func JWTMiddleware(next http.Handler, secret string) http.Handler {
 					return []byte(secret), nil
 				})
 				if err != nil {
-					ResponseError(w, http.StatusUnauthorized, err.Error())
+					ResponseError(w, r, http.StatusUnauthorized, err.Error())
 					return
 				}
 				if token.Valid {
 					context.Set(r, "decoded", token.Claims)
 					next.ServeHTTP(w, r)
 				} else {
-					ResponseError(w, http.StatusUnauthorized, "Invalid authorization token")
+					ResponseError(w, r, http.StatusUnauthorized, "Invalid authorization token")
 				}
 			}
 		} else {
-			ResponseError(w, http.StatusUnauthorized, "An authorization header is required")
+			ResponseError(w, r, http.StatusUnauthorized, "An authorization header is required")
 		}
 	})
 }
@@ -44,8 +44,8 @@ func HandlerFuncErrorHandling(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			errorMessage := ""
-			if r := recover(); r != nil {
-				switch t := r.(type) {
+			if rec := recover(); rec != nil {
+				switch t := rec.(type) {
 				case error:
 					errorMessage = t.Error()
 				case string:
@@ -53,7 +53,7 @@ func HandlerFuncErrorHandling(next http.HandlerFunc) http.HandlerFunc {
 				default:
 					errorMessage = "unknown error ocurred"
 				}
-				ResponseError(w, http.StatusInternalServerError, errorMessage)
+				ResponseError(w, r, http.StatusInternalServerError, errorMessage)
 			}
 		}()
 		next(w, r)
