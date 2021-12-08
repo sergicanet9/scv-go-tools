@@ -7,6 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // MongoRepository struct of a mongo repository
@@ -71,7 +72,7 @@ func (r *MongoRepository) GetByID(ctx context.Context, ID string) (interface{}, 
 }
 
 // Update updates the document with the specified ID in the repository's collection
-func (r *MongoRepository) Update(ctx context.Context, ID string, entity interface{}) error {
+func (r *MongoRepository) Update(ctx context.Context, ID string, entity interface{}, upsert bool) error {
 	_id, err := primitive.ObjectIDFromHex(ID)
 	if err != nil {
 		return err
@@ -79,12 +80,13 @@ func (r *MongoRepository) Update(ctx context.Context, ID string, entity interfac
 
 	filter := bson.M{"_id": _id}
 	update := bson.M{"$set": entity}
-	result, err := r.collection.UpdateOne(ctx, filter, update)
+	opts := options.Update().SetUpsert(upsert)
+	result, err := r.collection.UpdateOne(ctx, filter, update, opts)
 	if err != nil {
 		return err
 	}
 
-	if result.ModifiedCount < 1 {
+	if result.ModifiedCount < 1 && result.UpsertedCount < 1 {
 		return mongo.ErrNoDocuments
 	}
 	return nil
