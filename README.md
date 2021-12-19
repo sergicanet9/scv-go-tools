@@ -13,7 +13,7 @@ Base framework for creating REST APIs in Go.
 2. Execute:
 ```
 go mod init github.com/{username}/{repository_name}
-go get github.com/sergicanet9/scv-go-framework 
+go get github.com/sergicanet9/scv-go-framework/v2
 ```
 
 ## Usage examples
