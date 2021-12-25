@@ -30,11 +30,11 @@ func JWTMiddleware(next http.Handler, secret string) http.Handler {
 					context.Set(r, "decoded", token.Claims)
 					next.ServeHTTP(w, r)
 				} else {
-					ResponseError(w, r, http.StatusUnauthorized, "Invalid authorization token")
+					ResponseError(w, r, http.StatusUnauthorized, "invalid authorization token")
 				}
 			}
 		} else {
-			ResponseError(w, r, http.StatusUnauthorized, "An authorization header is required")
+			ResponseError(w, r, http.StatusUnauthorized, "an authorization header is required")
 		}
 	})
 }
