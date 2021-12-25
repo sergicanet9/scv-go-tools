@@ -32,6 +32,8 @@ func JWTMiddleware(next http.Handler, secret string) http.Handler {
 				} else {
 					ResponseError(w, r, http.StatusUnauthorized, "invalid authorization token")
 				}
+			} else {
+				ResponseError(w, r, http.StatusUnauthorized, "authorization header not properly formated, should be Bearer + {token}")
 			}
 		} else {
 			ResponseError(w, r, http.StatusUnauthorized, "an authorization header is required")
