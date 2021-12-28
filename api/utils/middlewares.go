@@ -10,7 +10,7 @@ import (
 )
 
 //JWTMiddleware is a middleware function to check the authorization JWT Bearer token header of the request
-func JWTMiddleware(next http.Handler, secret string) http.Handler {
+func JWTMiddleware(next http.Handler, secret string, claims jwt.MapClaims) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authorizationHeader := r.Header.Get("Authorization")
 		if authorizationHeader != "" {
@@ -18,7 +18,7 @@ func JWTMiddleware(next http.Handler, secret string) http.Handler {
 			if len(bearerToken) == 2 {
 				token, err := jwt.Parse(bearerToken[1], func(token *jwt.Token) (interface{}, error) {
 					if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-						return nil, fmt.Errorf("there was an error")
+						return nil, fmt.Errorf("there was an unknown error")
 					}
 					return []byte(secret), nil
 				})
@@ -26,7 +26,13 @@ func JWTMiddleware(next http.Handler, secret string) http.Handler {
 					ResponseError(w, r, http.StatusUnauthorized, err.Error())
 					return
 				}
-				if token.Valid {
+				if c, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+					for name, value := range claims {
+						if claim, ok := c[name]; !(ok && claim == value) {
+							ResponseError(w, r, http.StatusUnauthorized, fmt.Sprintf("required claim %s not found or incorrect", name))
+							return
+						}
+					}
 					context.Set(r, "decoded", token.Claims)
 					next.ServeHTTP(w, r)
 				} else {
