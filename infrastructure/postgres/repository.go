@@ -2,7 +2,6 @@ package infrastructure
 
 import (
 	"context"
-	"database/sql"
 )
 
 // PostgresRepository interface represents a postgres repository
@@ -12,5 +11,4 @@ type PostgresRepository interface {
 	GetByID(ctx context.Context, ID int) (interface{}, error)
 	Update(ctx context.Context, ID int, entity interface{}) (interface{}, error)
 	Delete(ctx context.Context, ID int) error
-	Transaction(tx *sql.Tx) error
 }
