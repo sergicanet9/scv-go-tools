@@ -1,6 +1,6 @@
 # scv-go-framework v2
 
-Base framework for creating REST APIs in Go.
+Base framework for building REST APIs in Go.
 
 ## Included packages
 - INFRASTRUCTURE/MONGO: provides MongoDB connection function and Repository Pattern with CRUD operations using the official [mongo-driver](https://github.com/mongodb/mongo-go-driver) package.
