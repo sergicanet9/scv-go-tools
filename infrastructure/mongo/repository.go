@@ -34,10 +34,17 @@ func (r *MongoRepository) Create(ctx context.Context, entity interface{}) (primi
 }
 
 // Get gets the documents mathing the filter in the repository's collection
-func (r *MongoRepository) Get(ctx context.Context, filter primitive.M) ([]interface{}, error) {
+func (r *MongoRepository) Get(ctx context.Context, filter primitive.M, skip, limit *int) ([]interface{}, error) {
 	var result []interface{}
 
-	cur, err := r.collection.Find(ctx, filter)
+	var skip64, limit64 int64
+	if skip != nil {
+		skip64 = int64(*skip)
+	}
+	if limit != nil {
+		limit64 = int64(*limit)
+	}
+	cur, err := r.collection.Find(ctx, filter, &options.FindOptions{Skip: &skip64, Limit: &limit64})
 	if err != nil {
 		return nil, err
 	}
