@@ -19,8 +19,10 @@ func ResponseJSON(w http.ResponseWriter, r *http.Request, status int, payload in
 	}
 
 	for name, values := range r.Header {
-		for _, value := range values {
-			w.Header().Set(name, value)
+		if name != "Content-Length" {
+			for _, value := range values {
+				w.Header().Set(name, value)
+			}
 		}
 	}
 	w.Header().Set("Content-Type", "application/json")
