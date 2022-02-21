@@ -17,6 +17,12 @@ func ResponseJSON(w http.ResponseWriter, r *http.Request, status int, payload in
 		log.Print(fmt.Sprintf("REQUEST %s:%s, RESPONSE %d: %s", r.Method, r.URL.String(), http.StatusInternalServerError, err.Error()))
 		return
 	}
+
+	for name, values := range r.Header {
+		for _, value := range values {
+			w.Header().Set(name, value)
+		}
+	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 	w.Write([]byte(response))
