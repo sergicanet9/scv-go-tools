@@ -23,26 +23,26 @@ func JWTMiddleware(next http.Handler, secret string, claims jwt.MapClaims) http.
 					return []byte(secret), nil
 				})
 				if err != nil {
-					ResponseError(w, r, http.StatusUnauthorized, err.Error())
+					ResponseError(w, r, nil, http.StatusUnauthorized, err.Error())
 					return
 				}
 				if c, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 					for name, value := range claims {
 						if claim, ok := c[name]; !(ok && claim == value) {
-							ResponseError(w, r, http.StatusUnauthorized, fmt.Sprintf("required claim %s not found or incorrect", name))
+							ResponseError(w, r, nil, http.StatusUnauthorized, fmt.Sprintf("required claim %s not found or incorrect", name))
 							return
 						}
 					}
 					context.Set(r, "decoded", token.Claims)
 					next.ServeHTTP(w, r)
 				} else {
-					ResponseError(w, r, http.StatusUnauthorized, "invalid authorization token")
+					ResponseError(w, r, nil, http.StatusUnauthorized, "invalid authorization token")
 				}
 			} else {
-				ResponseError(w, r, http.StatusUnauthorized, "authorization header not properly formated, should be Bearer + {token}")
+				ResponseError(w, r, nil, http.StatusUnauthorized, "authorization header not properly formated, should be Bearer + {token}")
 			}
 		} else {
-			ResponseError(w, r, http.StatusUnauthorized, "an authorization header is required")
+			ResponseError(w, r, nil, http.StatusUnauthorized, "an authorization header is required")
 		}
 	})
 }
@@ -61,7 +61,7 @@ func HandlerFuncErrorHandling(next http.HandlerFunc) http.HandlerFunc {
 				default:
 					errorMessage = "unknown error ocurred"
 				}
-				ResponseError(w, r, http.StatusInternalServerError, errorMessage)
+				ResponseError(w, r, nil, http.StatusInternalServerError, errorMessage)
 			}
 		}()
 		next(w, r)

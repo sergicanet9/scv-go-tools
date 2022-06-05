@@ -20,13 +20,16 @@ func ResponseJSON(w http.ResponseWriter, r *http.Request, body []byte, status in
 
 	response, err := json.Marshal(payload)
 	if err != nil {
-		w.Write([]byte(err.Error()))
 		log.Printf("Response paylod could not be marshalled")
-		log.Printf("REQUEST %s:%s\n BODY: %s\n RESPONSE %d: %s", r.Method, r.URL.String(), string(body), status, err.Error())
-		return
+		response, _ = json.Marshal(map[string]string{"error": err.Error()})
 	}
+
 	w.Write([]byte(response))
-	log.Printf("REQUEST %s:%s\n BODY: %s\n RESPONSE %d: %s", r.Method, r.URL.String(), string(body), status, string(response))
+	log.Printf("REQUEST %s:%s", r.Method, r.URL.String())
+	if body != nil {
+		log.Printf("BODY: %s", string(body))
+	}
+	log.Printf("RESPONSE %d: %s", status, string(response))
 }
 
 // ResponseError makes the error response with payload as json format
