@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"context"
+	"database/sql"
 	"reflect"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -10,41 +11,39 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// MongoRepository struct of a mongo repository
+// PostgresRepository struct of a mongo repository. Needs a specific implementation for every Repository.
+type PostgresRepository struct {
+	db *sql.DB
+}
+
+// MongoRepository struct of a mongo repository. Already implementing the Repository interface.
 type MongoRepository struct {
+	db         *mongo.Database
 	collection *mongo.Collection
 	target     interface{}
 }
 
-// NewMongoRepository creates a mongodb repository
-func NewMongoRepository(collection *mongo.Collection, target interface{}) *MongoRepository {
-	return &MongoRepository{
-		collection,
-		target,
-	}
-}
-
 // Create creates an entity in the repository's collection
-func (r *MongoRepository) Create(ctx context.Context, entity interface{}) (primitive.ObjectID, error) {
+func (r *MongoRepository) Create(ctx context.Context, entity interface{}) (string, error) {
 	result, err := r.collection.InsertOne(ctx, entity)
 	if err != nil {
-		return primitive.NilObjectID, err
+		return "", err
 	}
-	return result.InsertedID.(primitive.ObjectID), nil
+	return result.InsertedID.(primitive.ObjectID).Hex(), nil
 }
 
 // Get gets the documents mathing the filter in the repository's collection
-func (r *MongoRepository) Get(ctx context.Context, filter primitive.M, skip, limit *int) ([]interface{}, error) {
+func (r *MongoRepository) Get(ctx context.Context, filter map[string]interface{}, skip, take *int) ([]interface{}, error) {
 	var result []interface{}
 
-	var skip64, limit64 int64
+	var skip64, take64 int64
 	if skip != nil {
 		skip64 = int64(*skip)
 	}
-	if limit != nil {
-		limit64 = int64(*limit)
+	if take != nil {
+		take64 = int64(*take)
 	}
-	cur, err := r.collection.Find(ctx, filter, &options.FindOptions{Skip: &skip64, Limit: &limit64})
+	cur, err := r.collection.Find(ctx, filter, &options.FindOptions{Skip: &skip64, Limit: &take64})
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +61,7 @@ func (r *MongoRepository) Get(ctx context.Context, filter primitive.M, skip, lim
 
 // GetByID get the document with the specified ID in the repository's collection
 func (r *MongoRepository) GetByID(ctx context.Context, ID string) (interface{}, error) {
-	result := r.target
+	result := reflect.New(reflect.TypeOf(r.target)).Interface()
 
 	_id, err := primitive.ObjectIDFromHex(ID)
 	if err != nil {
@@ -79,7 +78,7 @@ func (r *MongoRepository) GetByID(ctx context.Context, ID string) (interface{}, 
 }
 
 // Update updates the document with the specified ID in the repository's collection
-func (r *MongoRepository) Update(ctx context.Context, ID string, entity interface{}, upsert bool) error {
+func (r *MongoRepository) Update(ctx context.Context, ID string, entity interface{}) error {
 	_id, err := primitive.ObjectIDFromHex(ID)
 	if err != nil {
 		return err
@@ -87,8 +86,7 @@ func (r *MongoRepository) Update(ctx context.Context, ID string, entity interfac
 
 	filter := bson.M{"_id": _id}
 	update := bson.M{"$set": entity}
-	opts := options.Update().SetUpsert(upsert)
-	result, err := r.collection.UpdateOne(ctx, filter, update, opts)
+	result, err := r.collection.UpdateOne(ctx, filter, update)
 	if err != nil {
 		return err
 	}
