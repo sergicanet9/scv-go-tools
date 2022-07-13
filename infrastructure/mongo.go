@@ -2,7 +2,6 @@ package infrastructure
 
 import (
 	"context"
-	"database/sql"
 	"reflect"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -11,12 +10,23 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// PostgresRepository struct of a mongo repository. Needs a specific implementation for every Repository.
-type PostgresRepository struct {
-	DB *sql.DB
+// ConnectMongoDB connects to MongoDB
+func ConnectMongoDB(ctx context.Context, name string, connection string) (*mongo.Database, error) {
+
+	clientOptions := options.Client().ApplyURI(connection)
+
+	client, err := mongo.Connect(ctx, clientOptions)
+
+	if err != nil {
+		return nil, err
+	}
+
+	database := client.Database(name)
+
+	return database, nil
 }
 
-// MongoRepository struct of a mongo repository. Already implementing the Repository interface.
+// MongoRepository struct of a mongo repository. Already implementing the Repository interface for being used as an adapter.
 type MongoRepository struct {
 	DB         *mongo.Database
 	Collection *mongo.Collection
