@@ -3,7 +3,7 @@
 Tools for building REST APIs in Go, easing the Hexagonal Architecture (Ports & Adapters).
 
 ## Included packages
-- PORTS: provides an interface of the repository pattern with CRUD operations, to be used in the Core of the API.
+- REPOSITORY: provides an interface of the repository pattern with CRUD operations, to be used in the Core of the API.
 - INFRASTRUCTURE: provides MongoDB and PostgreSQL connection functions and adapters for implementing the repository interface.
 - API/UTILS: provides JSON success/error responses with logs and Middlewares for error handling and JWT authentication & role-based authorization.
 
