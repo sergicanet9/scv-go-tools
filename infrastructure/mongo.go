@@ -16,13 +16,11 @@ func ConnectMongoDB(ctx context.Context, name string, connection string) (*mongo
 	clientOptions := options.Client().ApplyURI(connection)
 
 	client, err := mongo.Connect(ctx, clientOptions)
-
 	if err != nil {
 		return nil, err
 	}
 
 	database := client.Database(name)
-
 	return database, nil
 }
 
