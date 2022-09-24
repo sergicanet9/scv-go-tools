@@ -2,8 +2,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    tags:
-       - '*'
+    branches:
+      - main
+      - 'releases/**'
 
 jobs:
   run-tests:
