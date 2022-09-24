@@ -26,7 +26,7 @@ func ConnectMongoDB(ctx context.Context, name string, connection string) (*mongo
 	return database, nil
 }
 
-// MongoRepository struct of a mongo repository. Already implementing the Repository interface for being used as an adapter.
+// MongoRepository struct of a mongo repository which implements the Repository interface
 type MongoRepository struct {
 	DB         *mongo.Database
 	Collection *mongo.Collection

@@ -11,7 +11,7 @@ func ConnectPostgresDB(connection string) (*sql.DB, error) {
 	return db, nil
 }
 
-// PostgresRepository struct of a mongo repository. Needs a specific implementation for every Repository to be used as an adapter.
+// PostgresRepository struct of a mongo repository. Needs a specific implementation for every Repository.
 type PostgresRepository struct {
 	DB *sql.DB
 }

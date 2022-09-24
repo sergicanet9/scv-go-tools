@@ -1,11 +1,12 @@
 # scv-go-tools v3
 
-Tools for building REST APIs in Go, easing the Hexagonal Architecture (Ports & Adapters).
+Tools for building REST APIs in Go.
 
 ## Included packages
+- API/middlewares: provides Middlewares for panic recovering and JWT authentication & role-based authorization.
+- API/utils: provides JSON success/error responses with logs.
+- INFRASTRUCTURE: provides MongoDB and PostgreSQL connection functions and a generic implemention of the repository interface for MongoDB.
 - REPOSITORY: provides an interface of the repository pattern with CRUD operations, to be used in the Core of the API.
-- INFRASTRUCTURE: provides MongoDB and PostgreSQL connection functions and adapters for implementing the repository interface.
-- API/UTILS: provides JSON success/error responses with logs and Middlewares for error handling and JWT authentication & role-based authorization.
 
 ## Usage steps
 1. Create an empty repository and clone it.
