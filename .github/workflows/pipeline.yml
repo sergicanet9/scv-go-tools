@@ -1,0 +1,20 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    tags:
+       - '*'
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: arnested/go-version-action@v1
+        id: go-version
+      - name: Install Go ${{ steps.go-version.outputs.minimal }}
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ steps.go-version.outputs.minimal }}
+      - name: Run Tests
+        run: go test ./...
