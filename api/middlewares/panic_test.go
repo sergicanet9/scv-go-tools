@@ -9,11 +9,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var urlPanic = "http://testing"
-
-func TestPanicRecoverNoPanic(t *testing.T) {
+func TestPanicRecover_NoPanic(t *testing.T) {
+	var url = "http://testing"
 	rr := httptest.NewRecorder()
-	req := httptest.NewRequest(http.MethodGet, urlPanic, nil)
+	req := httptest.NewRequest(http.MethodGet, url, nil)
 
 	handlerFunc := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {})
 	handlerToTest := PanicRecover(handlerFunc)
@@ -24,9 +23,10 @@ func TestPanicRecoverNoPanic(t *testing.T) {
 	}
 }
 
-func TestPanicRecoverPanic(t *testing.T) {
+func TestPanicRecover_Panic(t *testing.T) {
+	var url = "http://testing"
 	rr := httptest.NewRecorder()
-	req := httptest.NewRequest(http.MethodGet, urlPanic, nil)
+	req := httptest.NewRequest(http.MethodGet, url, nil)
 	expectedResponse := map[string]string{"error": "test panic"}
 
 	handlerFunc := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

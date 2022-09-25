@@ -10,11 +10,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var urlJSON = "http://testing"
-
 func TestResponseJSON(t *testing.T) {
+	var url = "http://testing"
 	rr := httptest.NewRecorder()
-	req := httptest.NewRequest(http.MethodGet, urlJSON, nil)
+	req := httptest.NewRequest(http.MethodGet, url, nil)
 	body := map[string]string{"body": "test-body"}
 	expectedResponse := map[string]string{"response": "test-response"}
 
@@ -35,8 +34,9 @@ func TestResponseJSON(t *testing.T) {
 }
 
 func TestResponseError(t *testing.T) {
+	var url = "http://testing"
 	rr := httptest.NewRecorder()
-	req := httptest.NewRequest(http.MethodGet, urlJSON, nil)
+	req := httptest.NewRequest(http.MethodGet, url, nil)
 	body := map[string]string{"body": "test-body"}
 	err := "test-error"
 	expectedResponse := map[string]string{"error": err}
