@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
 
 	_ "github.com/lib/pq"
@@ -9,13 +10,16 @@ import (
 
 // ConnectPostgresDB connects to PostgresDB and ensures that the db is reachable
 func ConnectPostgresDB(connection string) (*sql.DB, error) {
-	db, _ := sql.Open("postgres", connection)
-	return db, pingSql(db)
+	db, err := sql.Open("postgres", connection)
+	return db, pingSql(db, err)
 }
 
-func pingSql(db *sql.DB) error {
+func pingSql(db *sql.DB, err error) error {
+	if db == nil || err != nil {
+		return fmt.Errorf("an unexpected error happened while opening the connection: %s", err)
+	}
+
 	// wait until db is ready
-	var err error
 	for start := time.Now(); time.Since(start) < (5 * time.Second); {
 		err = db.Ping()
 		if err == nil {
@@ -24,7 +28,6 @@ func pingSql(db *sql.DB) error {
 
 		time.Sleep(1 * time.Second)
 	}
-
 	return err
 }
 

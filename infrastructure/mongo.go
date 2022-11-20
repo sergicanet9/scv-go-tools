@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"context"
+	"fmt"
 	"reflect"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -14,15 +15,14 @@ import (
 func ConnectMongoDB(ctx context.Context, name string, connection string) (*mongo.Database, error) {
 	clientOptions := options.Client().ApplyURI(connection)
 	client, err := mongo.Connect(ctx, clientOptions)
-	if err != nil {
-		return nil, err
-	}
-	db := client.Database(name)
-	return db, pingMongo(db)
+	return pingMongo(client, name, err)
 }
 
-func pingMongo(db *mongo.Database) error {
-	return db.Client().Ping(context.Background(), nil)
+func pingMongo(client *mongo.Client, name string, err error) (*mongo.Database, error) {
+	if client == nil || err != nil {
+		return nil, fmt.Errorf("an unexpected error happened while opening the connection: %s", err)
+	}
+	return client.Database(name), client.Ping(context.Background(), nil)
 }
 
 // MongoRepository struct of a mongo repository

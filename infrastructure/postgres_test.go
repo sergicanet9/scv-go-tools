@@ -3,7 +3,7 @@ package infrastructure
 import (
 	"testing"
 
-	"github.com/sergicanet9/scv-go-tools/v3/test/mocks"
+	"github.com/sergicanet9/scv-go-tools/v3/mocks"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -24,8 +24,19 @@ func TestPingSql_Ok(t *testing.T) {
 	// Arrange
 	_, db := mocks.NewSqlDB(t)
 	// Act
-	err := pingSql(db)
+	err := pingSql(db, nil)
 
 	// Assert
 	assert.Equal(t, nil, err)
+}
+
+// TestPingSql_Ok checks that pingSql returns an error when a nil db is received
+func TestPingSql_NilDB(t *testing.T) {
+	// Arrange
+	expectedError := "an unexpected error happened while opening the connection: %!s(<nil>)"
+	// Act
+	err := pingSql(nil, nil)
+
+	// Assert
+	assert.Equal(t, expectedError, err.Error())
 }
