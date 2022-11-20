@@ -16,6 +16,11 @@ go mod init github.com/{username}/{repository_name}
 go get github.com/sergicanet9/scv-go-tools/v3
 ```
 
+## Run all tests with coverage
+```
+go test -race ./... -coverpkg=./... -coverprofile=coverage.out
+```
+
 ## Usage examples
 [go-hexagonal-restapi](https://github.com/sergicanet9/go-hexagonal-api)
 
