@@ -6,8 +6,8 @@ import (
 	"github.com/sergicanet9/scv-go-tools/v3/api/utils"
 )
 
-//PanicRecover is a middleware function to defer and return an error response in case of panic during the handler execution
-func PanicRecover(next http.HandlerFunc) http.HandlerFunc {
+// Recover is a middleware function to defer and return an error response in case of panic during the handler execution
+func Recover(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			errorMessage := ""

@@ -16,9 +16,9 @@ go mod init github.com/{username}/{repository_name}
 go get github.com/sergicanet9/scv-go-tools/v3
 ```
 
-## Run all tests with coverage
+## Run all unit tests with coverage
 ```
-go test -race ./... -coverpkg=./... -coverprofile=coverage.out
+go test -race ./... -coverprofile=coverage.out
 ```
 
 ## Usage examples
