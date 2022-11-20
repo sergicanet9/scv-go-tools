@@ -32,8 +32,7 @@ func TestPingMongo_Ok(t *testing.T) {
 		_, err := pingMongo(mt.Client, "test", nil)
 
 		// Assert
-		assert.Nil(mt, err, "Ping error: %v", err)
-		// assert.Equal(t, nil, err)
+		assert.Equal(mt, nil, err)
 	})
 }
 
