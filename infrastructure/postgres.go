@@ -2,7 +2,7 @@ package infrastructure
 
 import "database/sql"
 
-//ConnectPostgresDB connect to PostgresDB
+// ConnectPostgresDB connect to PostgresDB
 func ConnectPostgresDB(connection string) (*sql.DB, error) {
 	db, err := sql.Open("postgres", connection)
 	if err != nil {
@@ -11,7 +11,8 @@ func ConnectPostgresDB(connection string) (*sql.DB, error) {
 	return db, nil
 }
 
-// PostgresRepository struct of a mongo repository. Needs a specific implementation for every Repository.
+// PostgresRepository struct of a mongo repository
+// Needs a specific implementation of the Repository interface for every entity
 type PostgresRepository struct {
 	DB *sql.DB
 }
