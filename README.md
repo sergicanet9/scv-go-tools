@@ -3,11 +3,11 @@
 Tools for building REST APIs in Go.
 
 ## Included packages
-- API/middlewares: provides Middlewares for panic recovering and JWT authentication & role-based authorization.
-- API/utils: provides JSON success/error responses with logs.
-- INFRASTRUCTURE: provides MongoDB and PostgreSQL connection functions and a generic implemention of the Repository interface for MongoDB.
-- MOCKS: ... //TODO
-- REPOSITORY: provides an interface of the repository pattern with CRUD operations.
+- api/middlewares: provides Middlewares for panic recovering and JWT authentication & role-based authorization.
+- api/utils: provides JSON success/error responses with logs.
+- infrastructure: provides MongoDB and PostgreSQL connection functions and a generic implemention of the Repository interface for MongoDB.
+- mocks: provides mock creation functions for MongoDB and PostgreSQL.
+- repository: provides an interface of the repository pattern with CRUD operations.
 
 ## Usage steps
 1. Create an empty repository and clone it.
@@ -20,6 +20,11 @@ go get github.com/sergicanet9/scv-go-tools/v3
 ## Run all unit tests with coverage
 ```
 go test -race ./... -coverprofile=coverage.out
+```
+
+## View code coverage
+```
+go tool cover -html=coverage.out
 ```
 
 ## Usage examples
