@@ -10,18 +10,16 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// ConnectMongoDB connects to MongoDB
+// ConnectMongoDB connects to MongoDB and ensures that the db is reachable
 func ConnectMongoDB(ctx context.Context, name string, connection string) (*mongo.Database, error) {
-
 	clientOptions := options.Client().ApplyURI(connection)
-
 	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
 		return nil, err
 	}
 
-	database := client.Database(name)
-	return database, nil
+	err = client.Ping(context.Background(), nil)
+	return client.Database(name), err
 }
 
 // MongoRepository struct of a mongo repository
