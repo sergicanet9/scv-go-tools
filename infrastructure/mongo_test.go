@@ -2,29 +2,10 @@ package infrastructure
 
 import (
 	"context"
-	"fmt"
-	"log"
 	"testing"
 
-	"github.com/ory/dockertest"
-	"github.com/ory/dockertest/docker"
 	"github.com/stretchr/testify/assert"
 )
-
-const mongoInternalPort = "27017/tcp"
-
-// TestConnectMongoDB_Ok checks that ConnectMongoDB does not return an error when a valid connection string is provided
-func TestConnectMongoDB_Ok(t *testing.T) {
-	// Arrange
-	connection := setupMongo()
-
-	// Act
-	_, err := ConnectMongoDB(context.Background(), "test", connection)
-
-	// Assert
-	assert.Equal(t, nil, err)
-
-}
 
 // TestConnectMongoDB_InvalidConnection checks that ConnectMongoDB returns an error when an invalid connection string is provided
 func TestConnectMongoDB_InvalidConnection(t *testing.T) {
@@ -38,30 +19,20 @@ func TestConnectMongoDB_InvalidConnection(t *testing.T) {
 	assert.Equal(t, expectedError, err.Error())
 }
 
-func setupMongo() string {
-	// Uses a sensible default on windows (tcp/http) and linux/osx (socket)
-	pool, err := dockertest.NewPool("")
-	if err != nil {
-		log.Fatalf("could not connect to docker: %s", err)
-	}
+// // TestPingMongo_Ok checks that pingMongo does not return an error when a valid db is received
+// func TestPingMongo_Ok(t *testing.T) {
+// 	mt := mocks.NewMongoDB(t)
+// 	mt.Run("", func(mt *mtest.T) {
+// 		// Arrange
+// 		ping := bson.D{{"ping", "true"}}
+// 		mt.AddMockResponses(ping)
+// 		err2 := mt.Client.Ping(context.Background(), mtest.PrimaryRp)
+// 		fmt.Print(err2)
+// 		// Act
+// 		err := pingMongo(mt.DB)
 
-	// Pulls an image, creates a container based on it and runs it
-	resource, err := pool.RunWithOptions(&dockertest.RunOptions{
-		Repository: "mongo",
-		Tag:        "3.0",
-		Env: []string{
-			"listen_addresses = '*'",
-		},
-	}, func(config *docker.HostConfig) {
-		// set AutoRemove to true so that stopped container goes away by itself
-		config.AutoRemove = true
-		config.RestartPolicy = docker.RestartPolicy{
-			Name: "no",
-		}
-	})
-	if err != nil {
-		log.Fatalf("could not start resource: %s", err)
-	}
-	connectionString := fmt.Sprintf("mongodb://localhost:%s", resource.GetPort(mongoInternalPort))
-	return connectionString
-}
+// 		// Assert
+// 		assert.Nil(mt, err, "Ping error: %v", err)
+// 		// assert.Equal(t, nil, err)
+// 	})
+// }

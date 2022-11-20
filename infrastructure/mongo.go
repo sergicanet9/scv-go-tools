@@ -17,9 +17,12 @@ func ConnectMongoDB(ctx context.Context, name string, connection string) (*mongo
 	if err != nil {
 		return nil, err
 	}
+	db := client.Database(name)
+	return db, pingMongo(db)
+}
 
-	err = client.Ping(context.Background(), nil)
-	return client.Database(name), err
+func pingMongo(db *mongo.Database) error {
+	return db.Client().Ping(context.Background(), nil)
 }
 
 // MongoRepository struct of a mongo repository

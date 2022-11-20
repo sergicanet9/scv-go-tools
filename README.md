@@ -20,8 +20,6 @@ go get github.com/sergicanet9/scv-go-tools/v3
 ```
 go test -race ./... -coverprofile=coverage.out
 ```
- NOTES:
-- The docker daemon needs to be up and running for executing some tests.
 
 ## Usage examples
 [go-hexagonal-restapi](https://github.com/sergicanet9/go-hexagonal-api)

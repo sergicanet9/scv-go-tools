@@ -9,17 +9,13 @@ import (
 
 // ConnectPostgresDB connects to PostgresDB and ensures that the db is reachable
 func ConnectPostgresDB(connection string) (*sql.DB, error) {
-	db, err := openSQL("postgres", connection)
-	return db, err
+	db, _ := sql.Open("postgres", connection)
+	return db, pingSql(db)
 }
 
-func openSQL(driver, connection string) (*sql.DB, error) {
-	db, err := sql.Open(driver, connection)
-	if err != nil {
-		return nil, err
-	}
-
+func pingSql(db *sql.DB) error {
 	// wait until db is ready
+	var err error
 	for start := time.Now(); time.Since(start) < (5 * time.Second); {
 		err = db.Ping()
 		if err == nil {
@@ -27,10 +23,9 @@ func openSQL(driver, connection string) (*sql.DB, error) {
 		}
 
 		time.Sleep(1 * time.Second)
-		continue
 	}
 
-	return db, err
+	return err
 }
 
 // PostgresRepository struct of a mongo repository
