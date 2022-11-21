@@ -16,7 +16,7 @@ func TestConnectPostgresDB_InvalidConnection(t *testing.T) {
 	_, err := ConnectPostgresDB("invalid-connection")
 
 	// Assert
-	assert.NotEqual(t, expectedError, err.Error())
+	assert.Equal(t, expectedError, err.Error())
 }
 
 // TestPingSql_Ok checks that pingSql does not return an error when a valid db is received
