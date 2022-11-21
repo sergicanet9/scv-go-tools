@@ -1,5 +1,5 @@
 # scv-go-tools v3
-![Coverage](https://img.shields.io/badge/Coverage-1-red)
+![Coverage](https://img.shields.io/badge/Coverage-100.0%25-brightgreen)
 
 Tools for building REST APIs in Go.
 
