@@ -61,6 +61,7 @@ func (r *MongoRepository) Get(ctx context.Context, filter map[string]interface{}
 	for cur.Next(ctx) {
 		entry := reflect.New(reflect.TypeOf(r.Target)).Interface()
 		if err := cur.Decode(entry); err != nil {
+			cur.Close(ctx)
 			return nil, err
 		}
 		result = append(result, entry)
