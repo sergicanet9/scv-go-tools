@@ -21,7 +21,7 @@ jobs:
       
       - name: Run tests
         run: |
-          go test -v ./... -covermode=count -coverprofile=coverage.out
+          go test ./... -covermode=count -coverprofile=coverage.out
           go tool cover -func=coverage.out -o=coverage.out
       
       - name: Go coverage badge
