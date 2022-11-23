@@ -13,9 +13,6 @@ func NewMongoDB(t *testing.T) *mtest.T {
 }
 
 func NewSqlDB(t *testing.T) (sqlMock sqlmock.Sqlmock, db *sql.DB) {
-	db, sqlMock, err := sqlmock.New()
-	if err != nil {
-		t.Fatalf("unexpected error creating the mock: %s", err)
-	}
+	db, sqlMock, _ = sqlmock.New()
 	return
 }

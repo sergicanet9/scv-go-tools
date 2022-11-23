@@ -1,9 +1,13 @@
 package utils
 
 import (
+	"context"
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
+
+	"github.com/sergicanet9/scv-go-tools/v3/wrappers"
 )
 
 // ResponseJSON makes the response with payload as json format
@@ -33,6 +37,17 @@ func ResponseJSON(w http.ResponseWriter, r *http.Request, body []byte, status in
 }
 
 // ResponseError makes the error response with payload as json format
-func ResponseError(w http.ResponseWriter, r *http.Request, body []byte, status int, message string) {
-	ResponseJSON(w, r, body, status, map[string]string{"error": message})
+// Calls ResponseJSON with different error codes depending of the type of the error received
+func ResponseError(w http.ResponseWriter, r *http.Request, body []byte, err error) {
+	var status int
+	if errors.Is(err, wrappers.ValidationErr) {
+		status = http.StatusBadRequest
+	} else if errors.Is(err, wrappers.UnauthorizedErr) {
+		status = http.StatusUnauthorized
+	} else if errors.Is(err, context.DeadlineExceeded) {
+		status = http.StatusRequestTimeout
+	} else {
+		status = http.StatusInternalServerError
+	}
+	ResponseJSON(w, r, body, status, map[string]string{"error": err.Error()})
 }

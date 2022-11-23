@@ -8,6 +8,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/context"
 	"github.com/sergicanet9/scv-go-tools/v3/api/utils"
+	"github.com/sergicanet9/scv-go-tools/v3/wrappers"
 )
 
 // JWT is a middleware function to check the authorization JWT Bearer token header of the request
@@ -24,22 +25,22 @@ func JWT(next http.Handler, secret string, claims jwt.MapClaims) http.Handler {
 					return []byte(secret), nil
 				})
 				if _, ok := token.Claims.(jwt.MapClaims); err != nil || !ok || !token.Valid {
-					utils.ResponseError(w, r, nil, http.StatusUnauthorized, fmt.Sprintf("invalid token: %s", err.Error()))
+					utils.ResponseError(w, r, nil, wrappers.NewUnauthorizedErr(fmt.Errorf("invalid token: %s", err.Error())))
 					return
 				}
 				for name, value := range claims {
 					if claim, ok := token.Claims.(jwt.MapClaims)[name]; !(ok && claim == value) {
-						utils.ResponseError(w, r, nil, http.StatusUnauthorized, fmt.Sprintf("required claim %s not found or incorrect", name))
+						utils.ResponseError(w, r, nil, wrappers.NewUnauthorizedErr(fmt.Errorf("required claim %s not found or incorrect", name)))
 						return
 					}
 				}
 				context.Set(r, "decoded", token.Claims)
 				next.ServeHTTP(w, r)
 			} else {
-				utils.ResponseError(w, r, nil, http.StatusUnauthorized, "authorization header not properly formated, should be Bearer + {token}")
+				utils.ResponseError(w, r, nil, wrappers.NewUnauthorizedErr(fmt.Errorf("authorization header not properly formated, should be Bearer + {token}")))
 			}
 		} else {
-			utils.ResponseError(w, r, nil, http.StatusUnauthorized, "an authorization header is required")
+			utils.ResponseError(w, r, nil, wrappers.NewUnauthorizedErr(fmt.Errorf("an authorization header is required")))
 		}
 	})
 }

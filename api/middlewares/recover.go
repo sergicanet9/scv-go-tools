@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/sergicanet9/scv-go-tools/v3/api/utils"
@@ -10,17 +11,17 @@ import (
 func Recover(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
-			errorMessage := ""
+			var err error
 			if rec := recover(); rec != nil {
 				switch t := rec.(type) {
 				case error:
-					errorMessage = t.Error()
+					err = t
 				case string:
-					errorMessage = t
+					err = errors.New(t)
 				default:
-					errorMessage = "unknown error ocurred"
+					err = errors.New("unknown error ocurred")
 				}
-				utils.ResponseError(w, r, nil, http.StatusInternalServerError, errorMessage)
+				utils.ResponseError(w, r, nil, err)
 			}
 		}()
 		next(w, r)
