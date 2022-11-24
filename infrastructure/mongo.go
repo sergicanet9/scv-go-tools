@@ -69,7 +69,7 @@ func (r *MongoRepository) Get(ctx context.Context, filter map[string]interface{}
 		result = append(result, entry)
 	}
 
-	if len(result) == 0 {
+	if len(result) < 1 {
 		return nil, wrappers.NewNonExistentErr(mongo.ErrNoDocuments)
 	}
 
