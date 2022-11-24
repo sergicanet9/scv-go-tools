@@ -71,7 +71,7 @@ func TestResponseJSON_PayloadNotMarshalled(t *testing.T) {
 }
 
 // TestResponseError_NoContent checks that ResponseError returns the expected error response when the received error is of type NonExistentErr
-func TestResponseError_NoContent(t *testing.T) {
+func TestResponseError_BadRequestNonExistent(t *testing.T) {
 	// Arrange
 	var url = "http://testing"
 	rr := httptest.NewRecorder()
@@ -87,7 +87,7 @@ func TestResponseError_NoContent(t *testing.T) {
 	handlerToTest.ServeHTTP(rr, req)
 
 	// Assert
-	if want, got := http.StatusNoContent, rr.Code; want != got {
+	if want, got := http.StatusBadRequest, rr.Code; want != got {
 		t.Fatalf("unexpected http status code: want=%d but got=%d", want, got)
 	}
 
@@ -99,7 +99,7 @@ func TestResponseError_NoContent(t *testing.T) {
 }
 
 // TestResponseError_BadRequest checks that ResponseError returns the expected error response when the received error is of type ValidationErr
-func TestResponseError_BadRequest(t *testing.T) {
+func TestResponseError_BadRequestNonValid(t *testing.T) {
 	// Arrange
 	var url = "http://testing"
 	rr := httptest.NewRecorder()
