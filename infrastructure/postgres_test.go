@@ -1,6 +1,7 @@
 package infrastructure
 
 import (
+	"context"
 	"testing"
 
 	"github.com/sergicanet9/scv-go-tools/v3/mocks"
@@ -13,7 +14,7 @@ func TestConnectPostgresDB_InvalidConnection(t *testing.T) {
 	expectedError := "missing \"=\" after \"invalid-connection\" in connection info string\""
 
 	// Act
-	_, err := ConnectPostgresDB("invalid-connection")
+	_, err := ConnectPostgresDB(context.Background(), "invalid-connection")
 
 	// Assert
 	assert.Equal(t, expectedError, err.Error())
@@ -24,7 +25,7 @@ func TestPingSql_Ok(t *testing.T) {
 	// Arrange
 	_, db := mocks.NewSqlDB(t)
 	// Act
-	err := pingSql(db, nil)
+	err := pingSql(context.Background(), db, nil)
 
 	// Assert
 	assert.Equal(t, nil, err)
@@ -35,7 +36,7 @@ func TestPingSql_NilDB(t *testing.T) {
 	// Arrange
 	expectedError := "an unexpected error happened while opening the connection: %!s(<nil>)"
 	// Act
-	err := pingSql(nil, nil)
+	err := pingSql(context.Background(), nil, nil)
 
 	// Assert
 	assert.Equal(t, expectedError, err.Error())

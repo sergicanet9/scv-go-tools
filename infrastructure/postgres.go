@@ -1,6 +1,7 @@
 package infrastructure
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"time"
@@ -9,19 +10,19 @@ import (
 )
 
 // ConnectPostgresDB connects to PostgresDB and ensures that the db is reachable
-func ConnectPostgresDB(connection string) (*sql.DB, error) {
+func ConnectPostgresDB(ctx context.Context, connection string) (*sql.DB, error) {
 	db, err := sql.Open("postgres", connection)
-	return db, pingSql(db, err)
+	return db, pingSql(ctx, db, err)
 }
 
-func pingSql(db *sql.DB, err error) error {
+func pingSql(ctx context.Context, db *sql.DB, err error) error {
 	if db == nil || err != nil {
 		return fmt.Errorf("an unexpected error happened while opening the connection: %s", err)
 	}
 
 	// wait until db is ready
 	for start := time.Now(); time.Since(start) < (5 * time.Second); {
-		err = db.Ping()
+		err = db.PingContext(ctx)
 		if err == nil {
 			break
 		}
