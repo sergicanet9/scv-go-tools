@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/sergicanet9/scv-go-tools/v3/mocks"
+	"github.com/sergicanet9/scv-go-tools/v3/wrappers"
 	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -195,6 +196,35 @@ func TestGet_DecodeEntryError(t *testing.T) {
 	})
 }
 
+// TestGet_NoResourcesFound checks that Get returns an error when no resources are found
+func TestGet_NoResourcesFound(t *testing.T) {
+	mt := mocks.NewMongoDB(t)
+	defer mt.Close()
+
+	mt.Run("", func(mt *mtest.T) {
+		// Arrange
+		repo := MongoRepository{
+			DB:         mt.DB,
+			Collection: mt.DB.Collection(testEntityName),
+			Target:     testEntity{},
+		}
+
+		get := mtest.CreateCursorResponse(1,
+			fmt.Sprintf("test.%s", testEntityName),
+			mtest.FirstBatch,
+		)
+		killCursors := mtest.CreateCursorResponse(0, fmt.Sprintf("test.%s", testEntityName), mtest.NextBatch)
+
+		mt.AddMockResponses(get, killCursors)
+
+		// Act
+		_, err := repo.Get(context.Background(), map[string]interface{}{}, nil, nil)
+
+		// Assert
+		assert.Equal(t, wrappers.NewNonExistentErr(mongo.ErrNoDocuments), err)
+	})
+}
+
 // TestGetByID_Ok checks that GetByID does not return an error when the received ID has a valid format
 func TestGetByID_Ok(t *testing.T) {
 	mt := mocks.NewMongoDB(t)
@@ -213,9 +243,8 @@ func TestGetByID_Ok(t *testing.T) {
 			mtest.FirstBatch,
 			bson.D{
 				{Key: "_id", Value: primitive.NewObjectID()}})
-		killCursors := mtest.CreateCursorResponse(0, fmt.Sprintf("test.%s", testEntityName), mtest.NextBatch)
 
-		mt.AddMockResponses(get, killCursors)
+		mt.AddMockResponses(get)
 
 		// Act
 		result, err := repo.GetByID(context.Background(), primitive.NewObjectID().Hex())
@@ -269,6 +298,35 @@ func TestGetByID_FindOneError(t *testing.T) {
 
 		// Assert
 		assert.NotEmpty(t, err)
+	})
+}
+
+// TestGetByID_ResourceNotFound checks that GetByID returns an error when the resource is not found
+func TestGetByID_ResourceNotFound(t *testing.T) {
+	mt := mocks.NewMongoDB(t)
+	defer mt.Close()
+
+	mt.Run("", func(mt *mtest.T) {
+		// Arrange
+		repo := MongoRepository{
+			DB:         mt.DB,
+			Collection: mt.DB.Collection(testEntityName),
+			Target:     testEntity{},
+		}
+
+		get := mtest.CreateCursorResponse(1,
+			fmt.Sprintf("test.%s", testEntityName),
+			mtest.FirstBatch,
+		)
+		killCursors := mtest.CreateCursorResponse(0, fmt.Sprintf("test.%s", testEntityName), mtest.NextBatch)
+
+		mt.AddMockResponses(get, killCursors)
+
+		// Act
+		_, err := repo.GetByID(context.Background(), primitive.NewObjectID().Hex())
+
+		// Assert
+		assert.Equal(t, wrappers.NewNonExistentErr(mongo.ErrNoDocuments), err)
 	})
 }
 
@@ -368,7 +426,7 @@ func TestUpdate_NotUpdatedError(t *testing.T) {
 		err := repo.Update(context.Background(), primitive.NewObjectID().Hex(), newEntity)
 
 		// Assert
-		assert.Equal(t, mongo.ErrNoDocuments, err)
+		assert.Equal(t, wrappers.NewNonExistentErr(mongo.ErrNoDocuments), err)
 	})
 }
 
@@ -464,6 +522,6 @@ func TestDelete_NotDeletedError(t *testing.T) {
 		err := repo.Delete(context.Background(), primitive.NewObjectID().Hex())
 
 		// Assert
-		assert.Equal(t, mongo.ErrNoDocuments, err)
+		assert.Equal(t, wrappers.NewNonExistentErr(mongo.ErrNoDocuments), err)
 	})
 }

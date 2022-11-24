@@ -2,9 +2,11 @@ package infrastructure
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"reflect"
 
+	"github.com/sergicanet9/scv-go-tools/v3/wrappers"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -67,6 +69,10 @@ func (r *MongoRepository) Get(ctx context.Context, filter map[string]interface{}
 		result = append(result, entry)
 	}
 
+	if len(result) == 0 {
+		return nil, wrappers.NewNonExistentErr(mongo.ErrNoDocuments)
+	}
+
 	return result, nil
 }
 
@@ -82,6 +88,9 @@ func (r *MongoRepository) GetByID(ctx context.Context, ID string) (interface{}, 
 	filter := bson.M{"_id": _id}
 	err = r.Collection.FindOne(ctx, filter).Decode(result)
 	if err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			err = wrappers.NewNonExistentErr(err)
+		}
 		return nil, err
 	}
 
@@ -103,7 +112,7 @@ func (r *MongoRepository) Update(ctx context.Context, ID string, entity interfac
 	}
 
 	if result.ModifiedCount < 1 && result.UpsertedCount < 1 {
-		return mongo.ErrNoDocuments
+		return wrappers.NewNonExistentErr(mongo.ErrNoDocuments)
 	}
 	return nil
 }
@@ -122,7 +131,7 @@ func (r *MongoRepository) Delete(ctx context.Context, ID string) error {
 	}
 
 	if result.DeletedCount < 1 {
-		return mongo.ErrNoDocuments
+		return wrappers.NewNonExistentErr(mongo.ErrNoDocuments)
 	}
 	return nil
 }

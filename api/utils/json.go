@@ -40,7 +40,9 @@ func ResponseJSON(w http.ResponseWriter, r *http.Request, body []byte, status in
 // Calls ResponseJSON with different error codes depending of the type of the error received
 func ResponseError(w http.ResponseWriter, r *http.Request, body []byte, err error) {
 	var status int
-	if errors.Is(err, wrappers.ValidationErr) {
+	if errors.Is(err, wrappers.NonExistentErr) {
+		status = http.StatusNoContent
+	} else if errors.Is(err, wrappers.ValidationErr) {
 		status = http.StatusBadRequest
 	} else if errors.Is(err, wrappers.UnauthorizedErr) {
 		status = http.StatusUnauthorized
