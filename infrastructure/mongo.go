@@ -17,14 +17,14 @@ import (
 func ConnectMongoDB(ctx context.Context, name string, connection string) (*mongo.Database, error) {
 	clientOptions := options.Client().ApplyURI(connection)
 	client, err := mongo.Connect(ctx, clientOptions)
-	return pingMongo(client, name, err)
+	return pingMongo(ctx, client, name, err)
 }
 
-func pingMongo(client *mongo.Client, name string, err error) (*mongo.Database, error) {
+func pingMongo(ctx context.Context, client *mongo.Client, name string, err error) (*mongo.Database, error) {
 	if client == nil || err != nil {
 		return nil, fmt.Errorf("an unexpected error happened while opening the connection: %s", err)
 	}
-	return client.Database(name), client.Ping(context.Background(), nil)
+	return client.Database(name), client.Ping(ctx, nil)
 }
 
 // MongoRepository struct of a mongo repository

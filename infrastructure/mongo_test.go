@@ -40,7 +40,7 @@ func TestPingMongo_Ok(t *testing.T) {
 		mt.AddMockResponses(mtest.CreateSuccessResponse())
 
 		// Act
-		_, err := pingMongo(mt.Client, "test", nil)
+		_, err := pingMongo(context.Background(), mt.Client, "test", nil)
 
 		// Assert
 		assert.Equal(mt, nil, err)
@@ -52,7 +52,7 @@ func TestPingMongo_NilDB(t *testing.T) {
 	// Arrange
 	expectedError := "an unexpected error happened while opening the connection: %!s(<nil>)"
 	// Act
-	_, err := pingMongo(nil, "", nil)
+	_, err := pingMongo(context.Background(), nil, "", nil)
 
 	// Assert
 	assert.Equal(t, expectedError, err.Error())
