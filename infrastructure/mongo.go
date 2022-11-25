@@ -13,7 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// ConnectMongoDB connects to MongoDB and ensures that the db is reachable
+// ConnectMongoDB opens a connection to the MongoDB and ensures that the db is reachable
 func ConnectMongoDB(ctx context.Context, name string, connection string) (*mongo.Database, error) {
 	clientOptions := options.Client().ApplyURI(connection)
 	client, err := mongo.Connect(ctx, clientOptions)

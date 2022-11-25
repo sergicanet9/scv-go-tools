@@ -41,3 +41,15 @@ func TestPingSql_NilDB(t *testing.T) {
 	// Assert
 	assert.Equal(t, expectedError, err.Error())
 }
+
+// TestMigratePostgresDB_NotValidDirectory checks that MigratePostgresDB retuns an error when the given directory does not exist
+func TestMigratePostgresDB_NotValidDirectory(t *testing.T) {
+	// Arrange
+	_, db := mocks.NewSqlDB(t)
+	expectedError := "invalid-directory directory does not exist"
+	// Act
+	err := MigratePostgresDB(db, "invalid-directory")
+
+	// Assert
+	assert.Equal(t, expectedError, err.Error())
+}

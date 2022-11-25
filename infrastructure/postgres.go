@@ -7,9 +7,10 @@ import (
 	"time"
 
 	_ "github.com/lib/pq"
+	"github.com/pressly/goose/v3"
 )
 
-// ConnectPostgresDB connects to PostgresDB and ensures that the db is reachable
+// ConnectPostgresDB opens a connection to the PostgresDB and ensures that the db is reachable
 func ConnectPostgresDB(ctx context.Context, connection string) (*sql.DB, error) {
 	db, err := sql.Open("postgres", connection)
 	return db, pingSql(ctx, db, err)
@@ -30,6 +31,12 @@ func pingSql(ctx context.Context, db *sql.DB, err error) error {
 		time.Sleep(1 * time.Second)
 	}
 	return err
+}
+
+// MigratePostgresDB runs all migrations found in the given directory against the db
+func MigratePostgresDB(db *sql.DB, migrationsDir string) error {
+	goose.SetTableName("public.goose_db_version")
+	return goose.Up(db, migrationsDir)
 }
 
 // PostgresRepository struct of a mongo repository
