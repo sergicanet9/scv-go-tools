@@ -6,7 +6,7 @@ Tools for building REST APIs in Go.
 
 ## Included packages
 - api/middlewares: provides Middlewares for panic recovering and JWT authentication & role-based authorization.
-- api/utils: provides JSON success & error responses and http status codes management.
+- api/utils: provides JSON success & error responses with http status codes management and a function for unmarshalling JSON files into structs.
 - infrastructure: provides MongoDB and PostgreSQL connection functions, a migration runner for PostgresDB and a generic implemention of the Repository interface for MongoDB.
 - mocks: provides mock creation functions for MongoDB and PostgreSQL.
 - repository: provides an interface of the repository pattern with CRUD operations.
