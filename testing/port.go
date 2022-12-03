@@ -5,6 +5,7 @@ import (
 	"testing"
 )
 
+// FreePort returns an available port on localhost
 func FreePort(t *testing.T) int {
 	addr, _ := net.ResolveTCPAddr("tcp", "127.0.0.1:0")
 	l, _ := net.ListenTCP("tcp", addr)
