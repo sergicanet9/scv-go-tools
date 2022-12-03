@@ -11,7 +11,7 @@ Tools for building REST APIs in Go.
 - mocks: provides mock creation functions for MongoDB and PostgreSQL.
 - repository: provides an interface of the repository pattern with CRUD operations.
 - wrappers: provides convenient wraps for having custom types.
-- testing: provides a testing util for getting a free port on localhost.
+- test: provides a testing helper for getting a free port on localhost.
 
 ## Usage steps
 1. Create an empty repository and clone it.
