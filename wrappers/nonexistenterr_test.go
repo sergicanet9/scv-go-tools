@@ -2,6 +2,7 @@ package wrappers
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -10,7 +11,7 @@ import (
 // TestNewNonExistentErr_Ok checks that NewNonExistentErr returns the expected error type when receives an error
 func TestNewNonExistentErr_Ok(t *testing.T) {
 	// Arrange
-	err := errors.New("test error")
+	err := fmt.Errorf("test error")
 
 	// Act
 	gotErr := NewNonExistentErr(err)
@@ -36,7 +37,7 @@ func TestNewNonExistentErr_NilErr(t *testing.T) {
 func TestUNonExistentErrError_Ok(t *testing.T) {
 	// Arrange
 	expectedMsg := "test error"
-	err := NewNonExistentErr(errors.New(expectedMsg))
+	err := NewNonExistentErr(fmt.Errorf(expectedMsg))
 
 	// Act
 	gotMsg := err.Error()
@@ -48,7 +49,7 @@ func TestUNonExistentErrError_Ok(t *testing.T) {
 // TestNonExistentErrIs_True checks that Is returns true when the receiver is a nonExistentError
 func TestNonExistentErrIs_True(t *testing.T) {
 	// Arrange
-	err := NewNonExistentErr(errors.New("test"))
+	err := NewNonExistentErr(fmt.Errorf("test"))
 
 	// Act
 	isNonExistentErr := errors.Is(err, NonExistentErr)
@@ -60,7 +61,7 @@ func TestNonExistentErrIs_True(t *testing.T) {
 // TestNonExistentErrIs_False checks that Is returns false when the receiver is not a nonExistentError
 func TestNonExistentErrIs_False(t *testing.T) {
 	// Arrange
-	err := errors.New("test")
+	err := fmt.Errorf("test")
 
 	// Act
 	isNonExistentErr := errors.Is(err, NonExistentErr)

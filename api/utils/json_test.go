@@ -3,7 +3,6 @@ package utils
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -197,7 +196,7 @@ func TestResponseError_InternalServerError(t *testing.T) {
 	var url = "http://testing"
 	rr := httptest.NewRecorder()
 	req := httptest.NewRequest(http.MethodGet, url, nil)
-	err := errors.New("test")
+	err := fmt.Errorf("test")
 	expectedResponse := map[string]string{"error": err.Error()}
 
 	handlerToTest := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

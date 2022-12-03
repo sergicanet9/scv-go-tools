@@ -101,7 +101,7 @@ func (d *Duration) UnmarshalJSON(b []byte) (err error) {
 		}
 		return nil
 	default:
-		return errors.New("invalid duration")
+		return fmt.Errorf("invalid duration")
 	}
 	return nil
 }

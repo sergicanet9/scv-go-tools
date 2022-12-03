@@ -2,6 +2,7 @@ package wrappers
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -10,7 +11,7 @@ import (
 // TestNewUnauthorizedErr_Ok checks that NewUnauthorizedErr returns the expected error type when receives an error
 func TestNewUnauthorizedErr_Ok(t *testing.T) {
 	// Arrange
-	err := errors.New("test error")
+	err := fmt.Errorf("test error")
 
 	// Act
 	gotErr := NewUnauthorizedErr(err)
@@ -36,7 +37,7 @@ func TestNewUnauthorizedErr_NilErr(t *testing.T) {
 func TestUnauthorizedErrError_Ok(t *testing.T) {
 	// Arrange
 	expectedMsg := "test error"
-	err := NewUnauthorizedErr(errors.New(expectedMsg))
+	err := NewUnauthorizedErr(fmt.Errorf(expectedMsg))
 
 	// Act
 	gotMsg := err.Error()
@@ -48,7 +49,7 @@ func TestUnauthorizedErrError_Ok(t *testing.T) {
 // TestUnauthorizedErrIs_True checks that Is returns true when the receiver is an unauthorizedError
 func TestUnauthorizedErrIs_True(t *testing.T) {
 	// Arrange
-	err := NewUnauthorizedErr(errors.New("test"))
+	err := NewUnauthorizedErr(fmt.Errorf("test"))
 
 	// Act
 	isUnauthorizedErr := errors.Is(err, UnauthorizedErr)
@@ -60,7 +61,7 @@ func TestUnauthorizedErrIs_True(t *testing.T) {
 // TestUnauthorizedErrIs_False checks that Is returns false when the receiver is not an unauthorizedError
 func TestUnauthorizedErrIs_False(t *testing.T) {
 	// Arrange
-	err := errors.New("test")
+	err := fmt.Errorf("test")
 
 	// Act
 	isUnauthorizedErr := errors.Is(err, UnauthorizedErr)

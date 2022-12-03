@@ -2,6 +2,7 @@ package wrappers
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -10,7 +11,7 @@ import (
 // TestNewValidationErr_Ok checks that NewValidationErr returns the expected error type when receives an error
 func TestNewValidationErr_Ok(t *testing.T) {
 	// Arrange
-	err := errors.New("test error")
+	err := fmt.Errorf("test error")
 
 	// Act
 	gotErr := NewValidationErr(err)
@@ -36,7 +37,7 @@ func TestNewValidationErr_NilErr(t *testing.T) {
 func TestValidationErrError_Ok(t *testing.T) {
 	// Arrange
 	expectedMsg := "test error"
-	err := NewValidationErr(errors.New(expectedMsg))
+	err := NewValidationErr(fmt.Errorf(expectedMsg))
 
 	// Act
 	gotMsg := err.Error()
@@ -48,7 +49,7 @@ func TestValidationErrError_Ok(t *testing.T) {
 // TestValidationErrIs_True checks that Is returns true when the receiver is a validationError
 func TestValidationErrIs_True(t *testing.T) {
 	// Arrange
-	err := NewValidationErr(errors.New("test"))
+	err := NewValidationErr(fmt.Errorf("test"))
 
 	// Act
 	isValidationErr := errors.Is(err, ValidationErr)
@@ -60,7 +61,7 @@ func TestValidationErrIs_True(t *testing.T) {
 // TestValidationErrIs_False checks that Is returns false when the receiver is not a validationError
 func TestValidationErrIs_False(t *testing.T) {
 	// Arrange
-	err := errors.New("test")
+	err := fmt.Errorf("test")
 
 	// Act
 	isValidationErr := errors.Is(err, ValidationErr)
