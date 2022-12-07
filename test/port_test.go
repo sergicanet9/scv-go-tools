@@ -7,8 +7,6 @@ import (
 )
 
 func TestFreePort_Ok(t *testing.T) {
-	// Arrange
-
 	// Act
 	port := FreePort(t)
 
