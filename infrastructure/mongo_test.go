@@ -35,6 +35,8 @@ func TestConnectMongoDB_InvalidConnection(t *testing.T) {
 // TestPingMongo_Ok checks that pingMongo does not return an error when a valid db is received
 func TestPingMongo_Ok(t *testing.T) {
 	mt := mocks.NewMongoDB(t)
+	defer mt.Close()
+
 	mt.Run("", func(mt *mtest.T) {
 		// Arrange
 		mt.AddMockResponses(mtest.CreateSuccessResponse())
@@ -360,8 +362,8 @@ func TestUpdate_OK(t *testing.T) {
 // TestUpdate_InvalidID checks that Update returns an error when the received ID does not have a valid format
 func TestUpdate_InvalidID(t *testing.T) {
 	mt := mocks.NewMongoDB(t)
-
 	defer mt.Close()
+
 	mt.Run("", func(mt *mtest.T) {
 		// Arrange
 		repo := MongoRepository{
@@ -459,8 +461,8 @@ func TestDelete_OK(t *testing.T) {
 // TestDelete_InvalidID checks that Delete returns an error when the received ID does not have a valid format
 func TestDelete_InvalidID(t *testing.T) {
 	mt := mocks.NewMongoDB(t)
-
 	defer mt.Close()
+
 	mt.Run("", func(mt *mtest.T) {
 		// Arrange
 		repo := MongoRepository{
