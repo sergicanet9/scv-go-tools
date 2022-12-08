@@ -20,7 +20,7 @@ jobs:
           go test -race ./... -coverprofile=coverage.out
           go tool cover -func=coverage.out -o=coverage.out
       - name: Coverage badge
-        uses: sergicanet9/.github/templates/coverage.yml
+        uses: sergicanet9/.github/templates/coverage.yml@main
         with:
           filename: coverage.out
           email: "s.canet9@outlook.com"
