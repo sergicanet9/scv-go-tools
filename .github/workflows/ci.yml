@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: arnested/go-version-action@v1
+        id: go-version
+      - uses: actions/setup-go@v2
+        with:
+          go-version: ${{ steps.go-version.outputs.minimal }}
+      - name: Run unit tests
+        run: |
+          go test -race ./... -coverprofile=coverage.out
+          go tool cover -func=coverage.out -o=coverage.out
+      - name: Coverage badge
+        uses: "sergicanet9/.github/templates/coverage.yml"
+        with:
+          filename: coverage.out
+          email: "s.canet9@outlook.com"
+          name: "Sergi Canet"
+      
