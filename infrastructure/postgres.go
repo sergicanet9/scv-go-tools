@@ -11,8 +11,8 @@ import (
 )
 
 // ConnectPostgresDB opens a connection to the PostgresDB and ensures that the db is reachable
-func ConnectPostgresDB(ctx context.Context, connection string) (*sql.DB, error) {
-	db, err := sql.Open("postgres", connection)
+func ConnectPostgresDB(ctx context.Context, dsn string) (*sql.DB, error) {
+	db, err := sql.Open("postgres", dsn)
 	return db, pingSql(ctx, db, err)
 }
 

@@ -20,13 +20,13 @@ type testEntity struct {
 	ID string `bson:"_id,omitempty"`
 }
 
-// TestConnectMongoDB_InvalidConnection checks that ConnectMongoDB returns an error when an invalid connection string is provided
+// TestConnectMongoDB_InvalidConnection checks that ConnectMongoDB returns an error when an invalid DSN is provided
 func TestConnectMongoDB_InvalidConnection(t *testing.T) {
 	// Arrange
 	expectedError := "an unexpected error happened while opening the connection: error parsing uri: scheme must be \"mongodb\" or \"mongodb+srv\""
 
 	// Act
-	_, err := ConnectMongoDB(context.Background(), "test", "invalid-connection")
+	_, err := ConnectMongoDB(context.Background(), "invalid-dsn")
 
 	// Assert
 	assert.Equal(t, expectedError, err.Error())
@@ -39,13 +39,31 @@ func TestPingMongo_Ok(t *testing.T) {
 
 	mt.Run("", func(mt *mtest.T) {
 		// Arrange
+		dsn := "mongodb://127.0.0.1:27017/database"
 		mt.AddMockResponses(mtest.CreateSuccessResponse())
+
+		// Act
+		_, err := pingMongo(context.Background(), mt.Client, dsn, nil)
+
+		// Assert
+		assert.Equal(mt, nil, err)
+	})
+}
+
+// TestPingMongo_InvalidConnection checks that pingMongo returns an error when an invalid DSN is provided
+func TestPingMongo_InvalidConnection(t *testing.T) {
+	mt := mocks.NewMongoDB(t)
+	defer mt.Close()
+
+	mt.Run("", func(mt *mtest.T) {
+		// Arrange
+		expectedError := "DSN not valid: error parsing uri: scheme must be \"mongodb\" or \"mongodb+srv\""
 
 		// Act
 		_, err := pingMongo(context.Background(), mt.Client, "test", nil)
 
 		// Assert
-		assert.Equal(mt, nil, err)
+		assert.Equal(t, expectedError, err.Error())
 	})
 }
 

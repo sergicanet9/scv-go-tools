@@ -8,13 +8,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TestConnectPostgresDB_InvalidConnection checks that ConnectPostgresDB returns an error when an invalid connection string is provided
+// TestConnectPostgresDB_InvalidConnection checks that ConnectPostgresDB returns an error when an invalid DSN is provided
 func TestConnectPostgresDB_InvalidConnection(t *testing.T) {
 	// Arrange
-	expectedError := "missing \"=\" after \"invalid-connection\" in connection info string\""
+	expectedError := "missing \"=\" after \"invalid-dsn\" in connection info string\""
 
 	// Act
-	_, err := ConnectPostgresDB(context.Background(), "invalid-connection")
+	_, err := ConnectPostgresDB(context.Background(), "invalid-dsn")
 
 	// Assert
 	assert.Equal(t, expectedError, err.Error())

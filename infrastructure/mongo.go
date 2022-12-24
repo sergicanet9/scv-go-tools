@@ -11,20 +11,26 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/x/mongo/driver/connstring"
 )
 
 // ConnectMongoDB opens a connection to the MongoDB and ensures that the db is reachable
-func ConnectMongoDB(ctx context.Context, name string, connection string) (*mongo.Database, error) {
-	clientOptions := options.Client().ApplyURI(connection)
+func ConnectMongoDB(ctx context.Context, dsn string) (*mongo.Database, error) {
+	clientOptions := options.Client().ApplyURI(dsn)
 	client, err := mongo.Connect(ctx, clientOptions)
-	return pingMongo(ctx, client, name, err)
+	return pingMongo(ctx, client, dsn, err)
 }
 
-func pingMongo(ctx context.Context, client *mongo.Client, name string, err error) (*mongo.Database, error) {
+func pingMongo(ctx context.Context, client *mongo.Client, dsn string, err error) (*mongo.Database, error) {
 	if client == nil || err != nil {
 		return nil, fmt.Errorf("an unexpected error happened while opening the connection: %s", err)
 	}
-	return client.Database(name), client.Ping(ctx, nil)
+
+	cs, err := connstring.ParseAndValidate(dsn)
+	if err != nil {
+		return nil, fmt.Errorf("DSN not valid: %s", err)
+	}
+	return client.Database(cs.Database), client.Ping(ctx, nil)
 }
 
 // MongoRepository struct of a mongo repository
