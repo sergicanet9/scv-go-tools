@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/DATA-DOG/go-sqlmock v1.5.0
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/golang-jwt/jwt/v4 v4.4.3
 	github.com/gorilla/context v1.1.1
 	github.com/lib/pq v1.10.7
 	github.com/pressly/goose/v3 v3.7.0
