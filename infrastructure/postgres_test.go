@@ -24,6 +24,7 @@ func TestConnectPostgresDB_InvalidDSN(t *testing.T) {
 func TestPingSql_Ok(t *testing.T) {
 	// Arrange
 	_, db := mocks.NewSqlDB(t)
+
 	// Act
 	err := pingSql(context.Background(), db)
 
@@ -36,6 +37,7 @@ func TestMigratePostgresDB_NotValidDirectory(t *testing.T) {
 	// Arrange
 	_, db := mocks.NewSqlDB(t)
 	expectedError := "invalid-directory directory does not exist"
+
 	// Act
 	err := MigratePostgresDB(db, "invalid-directory")
 
