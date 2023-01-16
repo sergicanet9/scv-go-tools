@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/sergicanet9/scv-go-tools/v3/mocks"
 	"github.com/sergicanet9/scv-go-tools/v3/wrappers"
@@ -20,13 +21,28 @@ type testEntity struct {
 	ID string `bson:"_id,omitempty"`
 }
 
-// TestConnectMongoDB_InvalidConnection checks that ConnectMongoDB returns an error when an invalid DSN is provided
-func TestConnectMongoDB_InvalidConnection(t *testing.T) {
+// TestConnectMongoDB_InvalidDSN checks that ConnectMongoDB returns an error when an invalid DSN is provided
+func TestConnectMongoDB_InvalidDSN(t *testing.T) {
 	// Arrange
 	expectedError := "an unexpected error happened while opening the connection: error parsing uri: scheme must be \"mongodb\" or \"mongodb+srv\""
 
 	// Act
 	_, err := ConnectMongoDB(context.Background(), "invalid-dsn")
+
+	// Assert
+	assert.Equal(t, expectedError, err.Error())
+}
+
+// TestConnectMongoDB_NotReachableDSN checks that ConnectMongoDB returns an error when a valid but not reachable DSN is provided
+func TestConnectMongoDB_NotReachableDSN(t *testing.T) {
+	// Arrange
+	dsn := "mongodb://127.0.0.1:27017/database"
+	expectedError := "server selection error: context deadline exceeded, current topology: { Type: Unknown, Servers: [{ Addr: 127.0.0.1:27017, Type: Unknown, Last error: connection() error occurred during connection handshake: dial tcp 127.0.0.1:27017: connect: connection refused }, ] }"
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	defer cancel()
+
+	// Act
+	_, err := ConnectMongoDB(ctx, dsn)
 
 	// Assert
 	assert.Equal(t, expectedError, err.Error())
@@ -43,7 +59,7 @@ func TestPingMongo_Ok(t *testing.T) {
 		mt.AddMockResponses(mtest.CreateSuccessResponse())
 
 		// Act
-		_, err := pingMongo(context.Background(), mt.Client, dsn, nil)
+		_, err := pingMongo(context.Background(), mt.Client, dsn)
 
 		// Assert
 		assert.Equal(mt, nil, err)
@@ -60,22 +76,11 @@ func TestPingMongo_InvalidConnection(t *testing.T) {
 		expectedError := "DSN not valid: error parsing uri: scheme must be \"mongodb\" or \"mongodb+srv\""
 
 		// Act
-		_, err := pingMongo(context.Background(), mt.Client, "test", nil)
+		_, err := pingMongo(context.Background(), mt.Client, "test")
 
 		// Assert
 		assert.Equal(t, expectedError, err.Error())
 	})
-}
-
-// TestPingMongo_NilDB checks that pingMongo returns an error when a nil db is received
-func TestPingMongo_NilDB(t *testing.T) {
-	// Arrange
-	expectedError := "an unexpected error happened while opening the connection: %!s(<nil>)"
-	// Act
-	_, err := pingMongo(context.Background(), nil, "", nil)
-
-	// Assert
-	assert.Equal(t, expectedError, err.Error())
 }
 
 // TestCreate_OK checks that Create does not return an error when a valid entity is received

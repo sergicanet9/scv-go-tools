@@ -18,14 +18,13 @@ import (
 func ConnectMongoDB(ctx context.Context, dsn string) (*mongo.Database, error) {
 	clientOptions := options.Client().ApplyURI(dsn)
 	client, err := mongo.Connect(ctx, clientOptions)
-	return pingMongo(ctx, client, dsn, err)
-}
-
-func pingMongo(ctx context.Context, client *mongo.Client, dsn string, err error) (*mongo.Database, error) {
-	if client == nil || err != nil {
+	if err != nil {
 		return nil, fmt.Errorf("an unexpected error happened while opening the connection: %s", err)
 	}
+	return pingMongo(ctx, client, dsn)
+}
 
+func pingMongo(ctx context.Context, client *mongo.Client, dsn string) (*mongo.Database, error) {
 	cs, err := connstring.ParseAndValidate(dsn)
 	if err != nil {
 		return nil, fmt.Errorf("DSN not valid: %s", err)

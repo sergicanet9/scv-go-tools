@@ -8,8 +8,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TestConnectPostgresDB_InvalidConnection checks that ConnectPostgresDB returns an error when an invalid DSN is provided
-func TestConnectPostgresDB_InvalidConnection(t *testing.T) {
+// TestConnectPostgresDB_InvalidDSN checks that ConnectPostgresDB returns an error when an invalid DSN is provided
+func TestConnectPostgresDB_InvalidDSN(t *testing.T) {
 	// Arrange
 	expectedError := "missing \"=\" after \"invalid-dsn\" in connection info string\""
 
@@ -25,21 +25,10 @@ func TestPingSql_Ok(t *testing.T) {
 	// Arrange
 	_, db := mocks.NewSqlDB(t)
 	// Act
-	err := pingSql(context.Background(), db, nil)
+	err := pingSql(context.Background(), db)
 
 	// Assert
 	assert.Equal(t, nil, err)
-}
-
-// TestPingSql_Ok checks that pingSql returns an error when a nil db is received
-func TestPingSql_NilDB(t *testing.T) {
-	// Arrange
-	expectedError := "an unexpected error happened while opening the connection: %!s(<nil>)"
-	// Act
-	err := pingSql(context.Background(), nil, nil)
-
-	// Assert
-	assert.Equal(t, expectedError, err.Error())
 }
 
 // TestMigratePostgresDB_NotValidDirectory checks that MigratePostgresDB retuns an error when the given directory does not exist

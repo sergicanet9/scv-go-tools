@@ -3,7 +3,6 @@ package infrastructure
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"time"
 
 	_ "github.com/lib/pq"
@@ -12,15 +11,11 @@ import (
 
 // ConnectPostgresDB opens a connection to the PostgresDB and ensures that the db is reachable
 func ConnectPostgresDB(ctx context.Context, dsn string) (*sql.DB, error) {
-	db, err := sql.Open("postgres", dsn)
-	return db, pingSql(ctx, db, err)
+	db, _ := sql.Open("postgres", dsn)
+	return db, pingSql(ctx, db)
 }
 
-func pingSql(ctx context.Context, db *sql.DB, err error) error {
-	if db == nil || err != nil {
-		return fmt.Errorf("an unexpected error happened while opening the connection: %s", err)
-	}
-
+func pingSql(ctx context.Context, db *sql.DB) (err error) {
 	// wait until db is ready
 	for start := time.Now(); time.Since(start) < (5 * time.Second); {
 		err = db.PingContext(ctx)
