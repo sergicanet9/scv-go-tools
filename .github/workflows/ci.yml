@@ -17,7 +17,7 @@ jobs:
           go-version: ${{ steps.go-version.outputs.minimal }}
       - name: Run unit tests
         run: |
-          go test -race ./... -coverprofile=coverage.out
+          make test-unit
           go tool cover -func=coverage.out -o=coverage.out
       - name: Coverage badge
         uses: tj-actions/coverage-badge-go@v2
