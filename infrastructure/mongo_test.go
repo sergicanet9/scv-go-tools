@@ -62,7 +62,7 @@ func TestPingMongo_Ok(t *testing.T) {
 		_, err := pingMongo(context.Background(), mt.Client, dsn)
 
 		// Assert
-		assert.Equal(mt, nil, err)
+		assert.Nil(mt, err)
 	})
 }
 
@@ -83,7 +83,7 @@ func TestPingMongo_InvalidConnection(t *testing.T) {
 	})
 }
 
-// TestCreate_OK checks that Create does not return an error when a valid entity is received
+// TestCreate_OK checks that Create returns the expected response when a valid entity is received
 func TestCreate_OK(t *testing.T) {
 	mt := mocks.NewMongoDB(t)
 	defer mt.Close()
@@ -104,7 +104,7 @@ func TestCreate_OK(t *testing.T) {
 
 		// Assert
 		assert.IsType(t, newEntity.ID, id)
-		assert.Equal(t, nil, err)
+		assert.Nil(t, err)
 	})
 }
 
@@ -132,7 +132,7 @@ func TestCreate_InsertOneError(t *testing.T) {
 	})
 }
 
-// TestGet_Ok checks that Get does not return an error when a valid filter is received
+// TestGet_Ok checks that Get returns the expected responsewhen a valid filter is received
 func TestGet_Ok(t *testing.T) {
 	mt := mocks.NewMongoDB(t)
 	defer mt.Close()
@@ -160,7 +160,7 @@ func TestGet_Ok(t *testing.T) {
 		result, err := repo.Get(context.Background(), map[string]interface{}{}, &skip, &take)
 
 		// Assert
-		assert.Equal(t, nil, err)
+		assert.Nil(t, err)
 		assert.True(t, len(result) == 1)
 
 		entity := *(result[0].(*testEntity))
@@ -275,7 +275,7 @@ func TestGetByID_Ok(t *testing.T) {
 		result, err := repo.GetByID(context.Background(), primitive.NewObjectID().Hex())
 
 		// Assert
-		assert.Equal(t, nil, err)
+		assert.Nil(t, err)
 
 		entity := *(result.(*testEntity))
 		assert.IsType(t, testEntity{}, entity)
@@ -378,7 +378,7 @@ func TestUpdate_OK(t *testing.T) {
 		err := repo.Update(context.Background(), primitive.NewObjectID().Hex(), newEntity)
 
 		// Assert
-		assert.Equal(t, nil, err)
+		assert.Nil(t, err)
 	})
 }
 
@@ -477,7 +477,7 @@ func TestDelete_OK(t *testing.T) {
 		err := repo.Delete(context.Background(), primitive.NewObjectID().Hex())
 
 		// Assert
-		assert.Equal(t, nil, err)
+		assert.Nil(t, err)
 	})
 }
 

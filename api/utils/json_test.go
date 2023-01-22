@@ -218,7 +218,7 @@ func TestResponseError_InternalServerError(t *testing.T) {
 	assert.Equal(t, expectedResponse, response)
 }
 
-// TestLoadJSON_Ok checks that LoadJSON does not return an error an parses Duration object properly when all goes as expected
+// TestLoadJSON_Ok checks that LoadJSON returns the expected response and parses Duration object properly when all goes as expected
 func TestLoadJSON_Ok(t *testing.T) {
 	// Arrange
 	target := targetType{}

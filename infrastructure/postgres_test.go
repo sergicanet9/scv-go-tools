@@ -29,7 +29,7 @@ func TestPingSql_Ok(t *testing.T) {
 	err := pingSql(context.Background(), db)
 
 	// Assert
-	assert.Equal(t, nil, err)
+	assert.Nil(t, err)
 }
 
 // TestMigratePostgresDB_NotValidDirectory checks that MigratePostgresDB retuns an error when the given directory does not exist
