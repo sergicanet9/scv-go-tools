@@ -21,7 +21,7 @@ type targetType struct {
 	TestDuration2 Duration
 }
 
-// TestResponseJSON_Ok checks that ResponseJSON returns the expected response when all goes as expected
+// TestResponseJSON_Ok checks that ResponseJSON returns the expected response when everything goes as expected
 func TestResponseJSON_Ok(t *testing.T) {
 	// Arrange
 	var url = "http://testing"
@@ -218,7 +218,7 @@ func TestResponseError_InternalServerError(t *testing.T) {
 	assert.Equal(t, expectedResponse, response)
 }
 
-// TestLoadJSON_Ok checks that LoadJSON returns the expected response and parses Duration object properly when all goes as expected
+// TestLoadJSON_Ok checks that LoadJSON returns the expected response and parses Duration object properly when everything goes as expected
 func TestLoadJSON_Ok(t *testing.T) {
 	// Arrange
 	target := targetType{}
