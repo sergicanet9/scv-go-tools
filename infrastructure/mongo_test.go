@@ -37,7 +37,7 @@ func TestConnectMongoDB_InvalidDSN(t *testing.T) {
 func TestConnectMongoDB_NotReachableDSN(t *testing.T) {
 	// Arrange
 	dsn := "mongodb://127.0.0.1:27017/database"
-	expectedError := "server selection error: context deadline exceeded, current topology: { Type: Unknown, Servers: [{ Addr: 127.0.0.1:27017, Type: Unknown, Last error: connection() error occurred during connection handshake: dial tcp 127.0.0.1:27017: connect: connection refused }, ] }"
+	expectedError := "server selection error: context deadline exceeded, current topology: { Type: Unknown, Servers: [{ Addr: 127.0.0.1:27017, Type: Unknown, Last error: dial tcp 127.0.0.1:27017: connect: connection refused }, ] }"
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
 	defer cancel()
 
