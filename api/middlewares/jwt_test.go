@@ -22,7 +22,7 @@ func TestJWT_Ok(t *testing.T) {
 	req.Header.Add(headerName, jwtOk)
 
 	handlerFunc := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {})
-	handlerToTest := JWT(handlerFunc, secret, jwt.MapClaims{})
+	handlerToTest := JWT(secret, jwt.MapClaims{})(handlerFunc)
 
 	// Act
 	handlerToTest.ServeHTTP(rr, req)
@@ -43,7 +43,7 @@ func TestJWT_MissingToken(t *testing.T) {
 	expectedResponse := map[string]string{"error": "an authorization header is required"}
 
 	handlerFunc := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {})
-	handlerToTest := JWT(handlerFunc, secret, jwt.MapClaims{})
+	handlerToTest := JWT(secret, jwt.MapClaims{})(handlerFunc)
 
 	// Act
 	handlerToTest.ServeHTTP(rr, req)
@@ -73,7 +73,7 @@ func TestJWT_MalformedToken(t *testing.T) {
 	expectedResponse := map[string]string{"error": "authorization header not properly formated, should be Bearer + {token}"}
 
 	handlerFunc := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {})
-	handlerToTest := JWT(handlerFunc, secret, jwt.MapClaims{})
+	handlerToTest := JWT(secret, jwt.MapClaims{})(handlerFunc)
 
 	// Act
 	handlerToTest.ServeHTTP(rr, req)
@@ -103,7 +103,7 @@ func TestJWT_InvalidSigninMethod(t *testing.T) {
 	expectedResponse := map[string]string{"error": "invalid token: signin method not valid"}
 
 	handlerFunc := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {})
-	handlerToTest := JWT(handlerFunc, secret, jwt.MapClaims{})
+	handlerToTest := JWT(secret, jwt.MapClaims{})(handlerFunc)
 
 	// Act
 	handlerToTest.ServeHTTP(rr, req)
@@ -133,7 +133,7 @@ func TestJWT_InvalidSecret(t *testing.T) {
 	expectedResponse := map[string]string{"error": "invalid token: signature is invalid"}
 
 	handlerFunc := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {})
-	handlerToTest := JWT(handlerFunc, secret, jwt.MapClaims{})
+	handlerToTest := JWT(secret, jwt.MapClaims{})(handlerFunc)
 
 	// Act
 	handlerToTest.ServeHTTP(rr, req)
@@ -163,7 +163,7 @@ func TestJWT_MissingClaim(t *testing.T) {
 	expectedResponse := map[string]string{"error": "required claim test-claim not found or incorrect"}
 
 	handlerFunc := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {})
-	handlerToTest := JWT(handlerFunc, secret, jwt.MapClaims{"test-claim": true})
+	handlerToTest := JWT(secret, jwt.MapClaims{"test-claim": true})(handlerFunc)
 
 	// Act
 	handlerToTest.ServeHTTP(rr, req)

@@ -51,7 +51,6 @@ func TestConnectMongoDB_NotReachableDSN(t *testing.T) {
 // TestPingMongo_Ok checks that pingMongo does not return an error when a valid db is received
 func TestPingMongo_Ok(t *testing.T) {
 	mt := mocks.NewMongoDB(t)
-	defer mt.Close()
 
 	mt.Run("", func(mt *mtest.T) {
 		// Arrange
@@ -69,7 +68,6 @@ func TestPingMongo_Ok(t *testing.T) {
 // TestPingMongo_InvalidConnection checks that pingMongo returns an error when an invalid DSN is provided
 func TestPingMongo_InvalidConnection(t *testing.T) {
 	mt := mocks.NewMongoDB(t)
-	defer mt.Close()
 
 	mt.Run("", func(mt *mtest.T) {
 		// Arrange
@@ -86,7 +84,6 @@ func TestPingMongo_InvalidConnection(t *testing.T) {
 // TestCreate_OK checks that Create returns the expected response when a valid entity is received
 func TestCreate_OK(t *testing.T) {
 	mt := mocks.NewMongoDB(t)
-	defer mt.Close()
 
 	mt.Run("", func(mt *mtest.T) {
 		// Arrange
@@ -111,7 +108,6 @@ func TestCreate_OK(t *testing.T) {
 // TestCreate_InsertOneError checks that Create returns an error when InsertOne fails
 func TestCreate_InsertOneError(t *testing.T) {
 	mt := mocks.NewMongoDB(t)
-	defer mt.Close()
 
 	mt.Run("", func(mt *mtest.T) {
 		// Arrange
@@ -135,7 +131,6 @@ func TestCreate_InsertOneError(t *testing.T) {
 // TestGet_Ok checks that Get returns the expected responsewhen a valid filter is received
 func TestGet_Ok(t *testing.T) {
 	mt := mocks.NewMongoDB(t)
-	defer mt.Close()
 
 	mt.Run("", func(mt *mtest.T) {
 		// Arrange
@@ -171,7 +166,6 @@ func TestGet_Ok(t *testing.T) {
 // TestGet_FindError checks that Get returns an error when Find fails
 func TestGet_FindError(t *testing.T) {
 	mt := mocks.NewMongoDB(t)
-	defer mt.Close()
 
 	mt.Run("", func(mt *mtest.T) {
 		// Arrange
@@ -194,7 +188,6 @@ func TestGet_FindError(t *testing.T) {
 // TestGet_DecodeEntryError checks that Get returns an error when the result cannot be decoded
 func TestGet_DecodeEntryError(t *testing.T) {
 	mt := mocks.NewMongoDB(t)
-	defer mt.Close()
 
 	mt.Run("", func(mt *mtest.T) {
 		// Arrange
@@ -224,7 +217,6 @@ func TestGet_DecodeEntryError(t *testing.T) {
 // TestGet_NoResourcesFound checks that Get returns an error when no resources are found
 func TestGet_NoResourcesFound(t *testing.T) {
 	mt := mocks.NewMongoDB(t)
-	defer mt.Close()
 
 	mt.Run("", func(mt *mtest.T) {
 		// Arrange
@@ -253,7 +245,6 @@ func TestGet_NoResourcesFound(t *testing.T) {
 // TestGetByID_Ok checks that GetByID does not return an error when the received ID has a valid format
 func TestGetByID_Ok(t *testing.T) {
 	mt := mocks.NewMongoDB(t)
-	defer mt.Close()
 
 	mt.Run("", func(mt *mtest.T) {
 		// Arrange
@@ -286,7 +277,6 @@ func TestGetByID_Ok(t *testing.T) {
 func TestGetByID_InvalidID(t *testing.T) {
 	mt := mocks.NewMongoDB(t)
 
-	defer mt.Close()
 	mt.Run("", func(mt *mtest.T) {
 		// Arrange
 		repo := MongoRepository{
@@ -306,7 +296,6 @@ func TestGetByID_InvalidID(t *testing.T) {
 // TestGetByID_FindOneError checks that GetByID returns an error when FindOne fails
 func TestGetByID_FindOneError(t *testing.T) {
 	mt := mocks.NewMongoDB(t)
-	defer mt.Close()
 
 	mt.Run("", func(mt *mtest.T) {
 		// Arrange
@@ -329,7 +318,6 @@ func TestGetByID_FindOneError(t *testing.T) {
 // TestGetByID_ResourceNotFound checks that GetByID returns an error when the resource is not found
 func TestGetByID_ResourceNotFound(t *testing.T) {
 	mt := mocks.NewMongoDB(t)
-	defer mt.Close()
 
 	mt.Run("", func(mt *mtest.T) {
 		// Arrange
@@ -358,7 +346,6 @@ func TestGetByID_ResourceNotFound(t *testing.T) {
 // TestUpdate_OK checks that Update does not return an error when the received ID has a valid format
 func TestUpdate_OK(t *testing.T) {
 	mt := mocks.NewMongoDB(t)
-	defer mt.Close()
 
 	mt.Run("", func(mt *mtest.T) {
 		// Arrange
@@ -385,7 +372,6 @@ func TestUpdate_OK(t *testing.T) {
 // TestUpdate_InvalidID checks that Update returns an error when the received ID does not have a valid format
 func TestUpdate_InvalidID(t *testing.T) {
 	mt := mocks.NewMongoDB(t)
-	defer mt.Close()
 
 	mt.Run("", func(mt *mtest.T) {
 		// Arrange
@@ -407,7 +393,6 @@ func TestUpdate_InvalidID(t *testing.T) {
 // TestUpdate_UpdateOneError checks that Update returns an error when UpdateOne fails
 func TestUpdate_UpdateOneError(t *testing.T) {
 	mt := mocks.NewMongoDB(t)
-	defer mt.Close()
 
 	mt.Run("", func(mt *mtest.T) {
 		// Arrange
@@ -431,7 +416,6 @@ func TestUpdate_UpdateOneError(t *testing.T) {
 // TestUpdate_NotUpdatedError checks that Update returns an error when UpdateOne does not update any document
 func TestUpdate_NotUpdatedError(t *testing.T) {
 	mt := mocks.NewMongoDB(t)
-	defer mt.Close()
 
 	mt.Run("", func(mt *mtest.T) {
 		// Arrange
@@ -458,7 +442,6 @@ func TestUpdate_NotUpdatedError(t *testing.T) {
 // TestDelete_OK checks that Delete does not return an error when the received ID has a valid format
 func TestDelete_OK(t *testing.T) {
 	mt := mocks.NewMongoDB(t)
-	defer mt.Close()
 
 	mt.Run("", func(mt *mtest.T) {
 		// Arrange
@@ -484,7 +467,6 @@ func TestDelete_OK(t *testing.T) {
 // TestDelete_InvalidID checks that Delete returns an error when the received ID does not have a valid format
 func TestDelete_InvalidID(t *testing.T) {
 	mt := mocks.NewMongoDB(t)
-	defer mt.Close()
 
 	mt.Run("", func(mt *mtest.T) {
 		// Arrange
@@ -505,7 +487,6 @@ func TestDelete_InvalidID(t *testing.T) {
 // TestDelete_DeleteOneError checks that Delete returns an error when DeleteOne fails
 func TestDelete_DeleteOneError(t *testing.T) {
 	mt := mocks.NewMongoDB(t)
-	defer mt.Close()
 
 	mt.Run("", func(mt *mtest.T) {
 		// Arrange
@@ -528,7 +509,6 @@ func TestDelete_DeleteOneError(t *testing.T) {
 // TestDelete_NotDeletedError checks that Delete returns an error when DeleteOne does not delete any document
 func TestDelete_NotDeletedError(t *testing.T) {
 	mt := mocks.NewMongoDB(t)
-	defer mt.Close()
 
 	mt.Run("", func(mt *mtest.T) {
 		// Arrange
