@@ -6,11 +6,11 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"time"
 
+	"github.com/sergicanet9/scv-go-tools/v3/observability"
 	"github.com/sergicanet9/scv-go-tools/v3/wrappers"
 )
 
@@ -28,16 +28,16 @@ func ResponseJSON(w http.ResponseWriter, r *http.Request, body []byte, status in
 
 	response, err := json.Marshal(payload)
 	if err != nil {
-		log.Printf("Response paylod could not be marshalled")
+		observability.Logger().Printf("Response paylod could not be marshalled")
 		response, _ = json.Marshal(map[string]string{"error": err.Error()})
 	}
 
 	w.Write([]byte(response))
-	log.Printf("REQUEST %s:%s", r.Method, r.URL.String())
+	observability.Logger().Printf("REQUEST %s:%s", r.Method, r.URL.String())
 	if body != nil {
-		log.Printf("BODY: %s", string(body))
+		observability.Logger().Printf("BODY: %s", string(body))
 	}
-	log.Printf("RESPONSE %d: %s", status, string(response))
+	observability.Logger().Printf("RESPONSE %d: %s", status, string(response))
 }
 
 // ResponseError makes the error response with payload as json format
