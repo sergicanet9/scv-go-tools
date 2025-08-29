@@ -1,6 +1,6 @@
 # scv-go-tools v3
 ![CI](https://github.com/sergicanet9/scv-go-tools/actions/workflows/ci.yml/badge.svg)
-![Coverage](https://img.shields.io/badge/Coverage-100.0%25-brightgreen)
+![Coverage](https://img.shields.io/badge/Coverage-97.4%25-brightgreen)
 [![Go Reference](https://pkg.go.dev/badge/github.com/sergicanet9/scv-go-tools/v3.svg)](https://pkg.go.dev/github.com/sergicanet9/scv-go-tools/v3)
 
 Tools for building REST APIs in Go.
