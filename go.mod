@@ -31,6 +31,7 @@ require (
 	github.com/mfridman/interpolate v0.0.2 // indirect
 	github.com/montanaflynn/stats v0.7.1 // indirect
 	github.com/newrelic/go-agent/v3/integrations/logcontext-v2/logWriter v1.0.3
+	github.com/newrelic/go-agent/v3/integrations/nrmongo v1.1.5
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/sethvargo/go-retry v0.3.0 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect

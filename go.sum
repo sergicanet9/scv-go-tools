@@ -34,6 +34,8 @@ github.com/newrelic/go-agent/v3/integrations/logcontext-v2/logWriter v1.0.3 h1:t
 github.com/newrelic/go-agent/v3/integrations/logcontext-v2/logWriter v1.0.3/go.mod h1:Px3w0x8Lvl5Zz3kd3jYAT0EIoWPOfceS1nrjt93/Kt0=
 github.com/newrelic/go-agent/v3/integrations/logcontext-v2/nrwriter v1.0.0 h1:ugrng2OpXAEmwCQgLNmIGM8m0MZiitpswBVotVjyivA=
 github.com/newrelic/go-agent/v3/integrations/logcontext-v2/nrwriter v1.0.0/go.mod h1:5+hmfTxwzTj022CzgB8RpMZeY4AVBav25MvcTKSX/vg=
+github.com/newrelic/go-agent/v3/integrations/nrmongo v1.1.5 h1:ZA7VoeZTGiNUPf/SuDa9XeKFiuDmvEolOB9NWdsCYZE=
+github.com/newrelic/go-agent/v3/integrations/nrmongo v1.1.5/go.mod h1:LZ7t9qfeScR5xm4KEdIZWnETQBLyN+75QRuaeh4NE8s=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/pressly/goose/v3 v3.25.0 h1:6WeYhMWGRCzpyd89SpODFnCBCKz41KrVbRT58nVjGng=

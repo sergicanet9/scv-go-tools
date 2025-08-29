@@ -9,18 +9,24 @@ import (
 	"github.com/sergicanet9/scv-go-tools/v3/wrappers"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/event"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/x/mongo/driver/connstring"
 )
 
 // ConnectMongoDB opens a connection to the MongoDB and ensures that the db is reachable
-func ConnectMongoDB(ctx context.Context, dsn string) (*mongo.Database, error) {
+func ConnectMongoDB(ctx context.Context, dsn string, monitor *event.CommandMonitor) (*mongo.Database, error) {
 	clientOptions := options.Client().ApplyURI(dsn)
+	if monitor != nil {
+		clientOptions.SetMonitor(monitor)
+	}
+
 	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
 		return nil, fmt.Errorf("an unexpected error happened while opening the connection: %s", err)
 	}
+
 	return pingMongo(ctx, client, dsn)
 }
 

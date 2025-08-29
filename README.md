@@ -10,7 +10,7 @@ Tools for building REST APIs in Go.
 - api/utils: provides JSON success & error responses with http status codes management and a function for unmarshalling JSON files into structs.
 - infrastructure: provides MongoDB and PostgreSQL connection functions, a migration runner for PostgresDB and a generic implemention of the Repository interface for MongoDB.
 - mocks: provides mock creation functions for MongoDB and PostgreSQL.
-- observability: provides a singleton logger and a New Relic integration with APM and log forwarding.
+- observability: provides a singleton logger and a New Relic integration with APM, log forwarding and MongoDB monitoring.
 - repository: provides an interface of the repository pattern with CRUD operations.
 - wrappers: provides convenient wraps for having custom types.
 - testutils: provides convenient testing helper functions.
