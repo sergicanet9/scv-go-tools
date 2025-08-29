@@ -27,7 +27,7 @@ func TestConnectMongoDB_InvalidDSN(t *testing.T) {
 	expectedError := "an unexpected error happened while opening the connection: error parsing uri: scheme must be \"mongodb\" or \"mongodb+srv\""
 
 	// Act
-	_, err := ConnectMongoDB(context.Background(), "invalid-dsn", nil)
+	_, err := ConnectMongoDB(context.Background(), "invalid-dsn")
 
 	// Assert
 	assert.Equal(t, expectedError, err.Error())
@@ -42,7 +42,7 @@ func TestConnectMongoDB_NotReachableDSN(t *testing.T) {
 	defer cancel()
 
 	// Act
-	_, err := ConnectMongoDB(ctx, dsn, nil)
+	_, err := ConnectMongoDB(ctx, dsn)
 
 	// Assert
 	assert.Equal(t, expectedError, err.Error())
