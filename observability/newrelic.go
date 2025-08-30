@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/newrelic/go-agent/v3/integrations/logcontext-v2/logWriter"
+	"github.com/newrelic/go-agent/v3/integrations/logcontext-v2/nrwriter"
 	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
@@ -23,7 +23,7 @@ func SetupNewRelic(appName, newrelicKey string) (*newrelic.Application, error) {
 		return app, err
 	}
 
-	writer := logWriter.New(os.Stdout, app)
+	writer := nrwriter.New(os.Stdout, app)
 	logger = log.New(&writer, "", log.Default().Flags())
 	return app, nil
 }
