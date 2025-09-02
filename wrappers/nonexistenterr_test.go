@@ -37,7 +37,7 @@ func TestNewNonExistentErr_NilErr(t *testing.T) {
 func TestUNonExistentErrError_Ok(t *testing.T) {
 	// Arrange
 	expectedMsg := "test error"
-	err := NewNonExistentErr(fmt.Errorf(expectedMsg))
+	err := NewNonExistentErr(errors.New(expectedMsg))
 
 	// Act
 	gotMsg := err.Error()

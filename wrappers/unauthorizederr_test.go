@@ -37,7 +37,7 @@ func TestNewUnauthorizedErr_NilErr(t *testing.T) {
 func TestUnauthorizedErrError_Ok(t *testing.T) {
 	// Arrange
 	expectedMsg := "test error"
-	err := NewUnauthorizedErr(fmt.Errorf(expectedMsg))
+	err := NewUnauthorizedErr(errors.New(expectedMsg))
 
 	// Act
 	gotMsg := err.Error()

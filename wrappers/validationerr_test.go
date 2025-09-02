@@ -37,7 +37,7 @@ func TestNewValidationErr_NilErr(t *testing.T) {
 func TestValidationErrError_Ok(t *testing.T) {
 	// Arrange
 	expectedMsg := "test error"
-	err := NewValidationErr(fmt.Errorf(expectedMsg))
+	err := NewValidationErr(errors.New(expectedMsg))
 
 	// Act
 	gotMsg := err.Error()
