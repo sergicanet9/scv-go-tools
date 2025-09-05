@@ -1,60 +1,12 @@
 package utils
 
 import (
-	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
-	"net/http"
 	"os"
 	"time"
-
-	"github.com/sergicanet9/scv-go-tools/v3/observability"
-	"github.com/sergicanet9/scv-go-tools/v3/wrappers"
 )
-
-// ResponseJSON makes the response with payload as json format
-func ResponseJSON(w http.ResponseWriter, r *http.Request, body []byte, status int, payload interface{}) {
-	for name, values := range r.Header {
-		if name != "Content-Length" {
-			for _, value := range values {
-				w.Header().Set(name, value)
-			}
-		}
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-
-	response, err := json.Marshal(payload)
-	if err != nil {
-		observability.Logger().Printf("Response paylod could not be marshalled")
-		response, _ = json.Marshal(map[string]string{"error": err.Error()})
-	}
-
-	w.Write([]byte(response))
-	observability.Logger().Printf("REQUEST %s:%s", r.Method, r.URL.String())
-	if body != nil {
-		observability.Logger().Printf("BODY: %s", string(body))
-	}
-	observability.Logger().Printf("RESPONSE %d: %s", status, string(response))
-}
-
-// ResponseError makes the error response with payload as json format
-// Calls ResponseJSON with different error codes depending of the type of the error received
-func ResponseError(w http.ResponseWriter, r *http.Request, body []byte, err error) {
-	var status int
-	if errors.Is(err, wrappers.NonExistentErr) || errors.Is(err, wrappers.ValidationErr) {
-		status = http.StatusBadRequest
-	} else if errors.Is(err, wrappers.UnauthorizedErr) {
-		status = http.StatusUnauthorized
-	} else if errors.Is(err, context.DeadlineExceeded) {
-		status = http.StatusRequestTimeout
-	} else {
-		status = http.StatusInternalServerError
-	}
-	ResponseJSON(w, r, body, status, map[string]string{"error": err.Error()})
-}
 
 // LoadJSON opens the specified file and unmarshals its JSON content in the received struct
 func LoadJSON(filePath string, target interface{}) error {
@@ -82,7 +34,6 @@ func LoadJSON(filePath string, target interface{}) error {
 }
 
 // Duration allows to unmarshal time into time.Duration
-// https://github.com/golang/go/issues/10275
 type Duration struct {
 	time.Duration
 }

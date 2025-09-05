@@ -1,49 +1,62 @@
 package middlewares
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"strings"
 
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/gorilla/context"
-	"github.com/sergicanet9/scv-go-tools/v3/api/utils"
-	"github.com/sergicanet9/scv-go-tools/v3/wrappers"
+	"github.com/sergicanet9/scv-go-tools/v4/api/utils"
+	"github.com/sergicanet9/scv-go-tools/v4/wrappers"
 )
 
-// JWT is a middleware function to check the authorization JWT Bearer token header of the request
-func JWT(secret string, claims jwt.MapClaims) func(http.Handler) http.Handler {
+type claimsCtxKey string
+
+const ClaimsKey claimsCtxKey = "claims"
+
+// JWT is a configurable HTTP middleware that validates the JWT tokens and its claims for the incomming call
+func JWT(jwtSecret string, requiredClaims ...string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-			authorizationHeader := r.Header.Get("Authorization")
-			if authorizationHeader != "" {
-				bearerToken := strings.Split(authorizationHeader, " ")
-				if len(bearerToken) == 2 {
-					token, err := jwt.Parse(bearerToken[1], func(token *jwt.Token) (interface{}, error) {
-						if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-							return nil, fmt.Errorf("signin method not valid")
-						}
-						return []byte(secret), nil
-					})
-					if _, ok := token.Claims.(jwt.MapClaims); err != nil || !ok || !token.Valid {
-						utils.ResponseError(w, r, nil, wrappers.NewUnauthorizedErr(fmt.Errorf("invalid token: %s", err.Error())))
-						return
-					}
-					for name, value := range claims {
-						if claim, ok := token.Claims.(jwt.MapClaims)[name]; !(ok && claim == value) {
-							utils.ResponseError(w, r, nil, wrappers.NewUnauthorizedErr(fmt.Errorf("required claim %s not found or incorrect", name)))
-							return
-						}
-					}
-					context.Set(r, "decoded", token.Claims)
-					next.ServeHTTP(w, r)
-				} else {
-					utils.ResponseError(w, r, nil, wrappers.NewUnauthorizedErr(fmt.Errorf("authorization header not properly formated, should be Bearer + {token}")))
-				}
-			} else {
-				utils.ResponseError(w, r, nil, wrappers.NewUnauthorizedErr(fmt.Errorf("an authorization header is required")))
+			authorization := r.Header.Get("Authorization")
+			if authorization == "" {
+				utils.ErrorResponse(w, wrappers.NewUnauthorizedErr(errors.New("authorization token is not provided")))
+				return
 			}
+
+			bearerToken := strings.Split(authorization, " ")
+			if len(bearerToken) != 2 || bearerToken[0] != "Bearer" {
+				utils.ErrorResponse(w, wrappers.NewUnauthorizedErr(errors.New("invalid token format, should be Bearer + {token}")))
+				return
+			}
+			tokenString := bearerToken[1]
+
+			claims := jwt.MapClaims{}
+			token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+					return nil, fmt.Errorf("signin method not valid")
+				}
+				return []byte(jwtSecret), nil
+			})
+
+			if err != nil || !token.Valid {
+				utils.ErrorResponse(w, wrappers.NewUnauthorizedErr(fmt.Errorf("invalid token: %v", err)))
+				return
+			}
+
+			for _, requiredClaim := range requiredClaims {
+				if _, ok := claims[requiredClaim]; !ok {
+					utils.ErrorResponse(w, wrappers.NewUnauthenticatedErr(fmt.Errorf("insufficient permissions: required claim '%s' not found", requiredClaim)))
+					return
+				}
+			}
+
+			newCtx := context.WithValue(r.Context(), ClaimsKey, claims)
+			r = r.WithContext(newCtx)
+			next.ServeHTTP(w, r)
 		})
 	}
 }

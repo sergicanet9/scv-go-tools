@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sergicanet9/scv-go-tools/v3/mocks"
-	"github.com/sergicanet9/scv-go-tools/v3/wrappers"
+	"github.com/sergicanet9/scv-go-tools/v4/mocks"
+	"github.com/sergicanet9/scv-go-tools/v4/wrappers"
 	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

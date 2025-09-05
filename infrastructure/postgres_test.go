@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/sergicanet9/scv-go-tools/v3/mocks"
+	"github.com/sergicanet9/scv-go-tools/v4/mocks"
 	"github.com/stretchr/testify/assert"
 )
 

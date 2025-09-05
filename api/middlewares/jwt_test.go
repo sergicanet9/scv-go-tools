@@ -6,176 +6,81 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/golang-jwt/jwt/v4"
 	"github.com/stretchr/testify/assert"
 )
 
-// TestJWT_Ok checks that the middleware does not return an error when the token matches with all requirements
-func TestJWT_Ok(t *testing.T) {
-	// Arrange
-	jwtOk := "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.mpHl842O7xEZjgQ8CyX8xYLDoEORGVMnAxULkW-u8Ek"
+// TestJWT checks that the JWT middleware correctly handles all expected scenarios
+func TestJWT(t *testing.T) {
+	cases := []struct {
+		name             string
+		jwtToken         string
+		requiredClaims   []string
+		expectedCode     int
+		expectedResponse map[string]string
+	}{
+		{
+			name:             "Valid token and claims",
+			jwtToken:         "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.mpHl842O7xEZjgQ8CyX8xYLDoEORGVMnAxULkW-u8Ek",
+			expectedCode:     http.StatusOK,
+			expectedResponse: nil,
+		},
+		{
+			name:             "Missing token",
+			jwtToken:         "",
+			expectedCode:     http.StatusUnauthorized,
+			expectedResponse: map[string]string{"error": "authorization token is not provided"},
+		},
+		{
+			name:             "Malformed token",
+			jwtToken:         "123",
+			expectedCode:     http.StatusUnauthorized,
+			expectedResponse: map[string]string{"error": "invalid token format, should be Bearer + {token}"},
+		},
+		{
+			name:             "Invalid signin method",
+			jwtToken:         "Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.e30.",
+			expectedCode:     http.StatusUnauthorized,
+			expectedResponse: map[string]string{"error": "invalid token: signin method not valid"},
+		},
+		{
+			name:             "Invalid secret",
+			jwtToken:         "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.df4nTfuWWdndfrlIxF0iWUrrcANrM4bzKdbYa9VeAj8",
+			expectedCode:     http.StatusUnauthorized,
+			expectedResponse: map[string]string{"error": "invalid token: signature is invalid"},
+		},
+		{
+			name:             "Missing required claim",
+			jwtToken:         "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.mpHl842O7xEZjgQ8CyX8xYLDoEORGVMnAxULkW-u8Ek",
+			requiredClaims:   []string{"test-claim"},
+			expectedCode:     http.StatusForbidden,
+			expectedResponse: map[string]string{"error": "insufficient permissions: required claim 'test-claim' not found"},
+		},
+	}
+
 	secret := "test-secret"
-	headerName := "Authorization"
 	url := "http://testing"
-	rr := httptest.NewRecorder()
-	req := httptest.NewRequest(http.MethodGet, url, nil)
-	req.Header.Add(headerName, jwtOk)
 
-	handlerFunc := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {})
-	handlerToTest := JWT(secret, jwt.MapClaims{})(handlerFunc)
+	for _, tt := range cases {
+		t.Run(tt.name, func(t *testing.T) {
+			rr := httptest.NewRecorder()
+			req := httptest.NewRequest(http.MethodGet, url, nil)
+			if tt.jwtToken != "" {
+				req.Header.Add("Authorization", tt.jwtToken)
+			}
 
-	// Act
-	handlerToTest.ServeHTTP(rr, req)
+			handlerFunc := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {})
+			handlerToTest := JWT(secret, tt.requiredClaims...)(handlerFunc)
 
-	// Assert
-	if want, got := http.StatusOK, rr.Code; want != got {
-		t.Fatalf("unexpected http status code: want=%d but got=%d", want, got)
+			handlerToTest.ServeHTTP(rr, req)
+
+			assert.Equal(t, tt.expectedCode, rr.Code)
+			if tt.expectedResponse != nil {
+				var response map[string]string
+				if err := json.NewDecoder(rr.Body).Decode(&response); err != nil {
+					t.Fatalf("unexpected error parsing the response: %s", err)
+				}
+				assert.Equal(t, tt.expectedResponse, response)
+			}
+		})
 	}
-}
-
-// TestJWT_MissingToken checks that the middleware returns an error when the token is missing
-func TestJWT_MissingToken(t *testing.T) {
-	// Arrange
-	secret := "test-secret"
-	url := "http://testing"
-	rr := httptest.NewRecorder()
-	req := httptest.NewRequest(http.MethodGet, url, nil)
-	expectedResponse := map[string]string{"error": "an authorization header is required"}
-
-	handlerFunc := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {})
-	handlerToTest := JWT(secret, jwt.MapClaims{})(handlerFunc)
-
-	// Act
-	handlerToTest.ServeHTTP(rr, req)
-
-	// Assert
-	if want, got := http.StatusUnauthorized, rr.Code; want != got {
-		t.Fatalf("unexpected http status code: want=%d but got=%d", want, got)
-	}
-
-	var response map[string]string
-	if err := json.NewDecoder(rr.Body).Decode(&response); err != nil {
-		t.Fatalf("unexpected error parsing the response: %s", err)
-	}
-	assert.Equal(t, expectedResponse, response)
-}
-
-// TestJWT_MalformedToken checks that the middleware returns an error when the token is not properly formated
-func TestJWT_MalformedToken(t *testing.T) {
-	// Arrange
-	jwtMalformed := "123"
-	secret := "test-secret"
-	headerName := "Authorization"
-	url := "http://testing"
-	rr := httptest.NewRecorder()
-	req := httptest.NewRequest(http.MethodGet, url, nil)
-	req.Header.Add(headerName, jwtMalformed)
-	expectedResponse := map[string]string{"error": "authorization header not properly formated, should be Bearer + {token}"}
-
-	handlerFunc := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {})
-	handlerToTest := JWT(secret, jwt.MapClaims{})(handlerFunc)
-
-	// Act
-	handlerToTest.ServeHTTP(rr, req)
-
-	// Assert
-	if want, got := http.StatusUnauthorized, rr.Code; want != got {
-		t.Fatalf("unexpected http status code: want=%d but got=%d", want, got)
-	}
-
-	var response map[string]string
-	if err := json.NewDecoder(rr.Body).Decode(&response); err != nil {
-		t.Fatalf("unexpected error parsing the response: %s", err)
-	}
-	assert.Equal(t, expectedResponse, response)
-}
-
-// TestJWT_InvalidSigninMethod checks that the middleware returns an error when the token´s signature is not expected
-func TestJWT_InvalidSigninMethod(t *testing.T) {
-	// Arrange
-	jwtOk := "Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.e30."
-	secret := "none signing method allowed"
-	headerName := "Authorization"
-	url := "http://testing"
-	rr := httptest.NewRecorder()
-	req := httptest.NewRequest(http.MethodGet, url, nil)
-	req.Header.Add(headerName, jwtOk)
-	expectedResponse := map[string]string{"error": "invalid token: signin method not valid"}
-
-	handlerFunc := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {})
-	handlerToTest := JWT(secret, jwt.MapClaims{})(handlerFunc)
-
-	// Act
-	handlerToTest.ServeHTTP(rr, req)
-
-	// Assert
-	if want, got := http.StatusUnauthorized, rr.Code; want != got {
-		t.Fatalf("unexpected http status code: want=%d but got=%d", want, got)
-	}
-
-	var response map[string]string
-	if err := json.NewDecoder(rr.Body).Decode(&response); err != nil {
-		t.Fatalf("unexpected error parsing the response: %s", err)
-	}
-	assert.Equal(t, expectedResponse, response)
-}
-
-// TestJWT_InvalidSecret checks that the middleware returns an error when the token´s secret is not the expected one
-func TestJWT_InvalidSecret(t *testing.T) {
-	// Arrange
-	jwtInvalidSecret := "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.df4nTfuWWdndfrlIxF0iWUrrcANrM4bzKdbYa9VeAj8"
-	secret := "test-secret"
-	headerName := "Authorization"
-	url := "http://testing"
-	rr := httptest.NewRecorder()
-	req := httptest.NewRequest(http.MethodGet, url, nil)
-	req.Header.Add(headerName, jwtInvalidSecret)
-	expectedResponse := map[string]string{"error": "invalid token: signature is invalid"}
-
-	handlerFunc := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {})
-	handlerToTest := JWT(secret, jwt.MapClaims{})(handlerFunc)
-
-	// Act
-	handlerToTest.ServeHTTP(rr, req)
-
-	// Assert
-	if want, got := http.StatusUnauthorized, rr.Code; want != got {
-		t.Fatalf("unexpected http status code: want=%d but got=%d", want, got)
-	}
-
-	var response map[string]string
-	if err := json.NewDecoder(rr.Body).Decode(&response); err != nil {
-		t.Fatalf("unexpected error parsing the response: %s", err)
-	}
-	assert.Equal(t, expectedResponse, response)
-}
-
-// TestJWT_MissingClaim checks that the middleware returns an error when a required claim is missing in the token
-func TestJWT_MissingClaim(t *testing.T) {
-	// Arrange
-	jwtMissingClaim := "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.mpHl842O7xEZjgQ8CyX8xYLDoEORGVMnAxULkW-u8Ek"
-	secret := "test-secret"
-	headerName := "Authorization"
-	url := "http://testing"
-	rr := httptest.NewRecorder()
-	req := httptest.NewRequest(http.MethodGet, url, nil)
-	req.Header.Add(headerName, jwtMissingClaim)
-	expectedResponse := map[string]string{"error": "required claim test-claim not found or incorrect"}
-
-	handlerFunc := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {})
-	handlerToTest := JWT(secret, jwt.MapClaims{"test-claim": true})(handlerFunc)
-
-	// Act
-	handlerToTest.ServeHTTP(rr, req)
-
-	// Assert
-	if want, got := http.StatusUnauthorized, rr.Code; want != got {
-		t.Fatalf("unexpected http status code: want=%d but got=%d", want, got)
-	}
-
-	var response map[string]string
-	if err := json.NewDecoder(rr.Body).Decode(&response); err != nil {
-		t.Fatalf("unexpected error parsing the response: %s", err)
-	}
-	assert.Equal(t, expectedResponse, response)
 }

@@ -1,26 +1,24 @@
-# scv-go-tools v3
+# scv-go-tools v4
 ![CI](https://github.com/sergicanet9/scv-go-tools/actions/workflows/ci.yml/badge.svg)
 ![Coverage](https://img.shields.io/badge/Coverage-97.4%25-brightgreen)
-[![Go Reference](https://pkg.go.dev/badge/github.com/sergicanet9/scv-go-tools/v3.svg)](https://pkg.go.dev/github.com/sergicanet9/scv-go-tools/v3)
+[![Go Reference](https://pkg.go.dev/badge/github.com/sergicanet9/scv-go-tools/v4.svg)](https://pkg.go.dev/github.com/sergicanet9/scv-go-tools/v4)
 
-Tools for building REST APIs in Go.
+Toolkit for building REST and gRPC APIs in Go, structured around clean architecture principles.
 
 ## Included packages
-- api/middlewares: provides Middlewares for panic recovering and JWT authentication & role-based authorization.
-- api/utils: provides JSON success & error responses with http status codes management and a function for unmarshalling JSON files into structs.
-- infrastructure: provides MongoDB and PostgreSQL connection functions, a migration runner for PostgresDB and a generic implemention of the Repository interface for MongoDB.
-- mocks: provides mock creation functions for MongoDB and PostgreSQL.
-- observability: provides a singleton logger and a New Relic integration with APM and log forwarding.
-- repository: provides an interface of the repository pattern with CRUD operations.
-- wrappers: provides convenient wraps for having custom types.
-- testutils: provides convenient testing helper functions.
+- **api/middlewares**: HTTP middlewares for panic recovery, JWT authentication, role-based authorization, and request/response logging.
+- **api/interceptors**: gRPC interceptors providing equivalent functionality to HTTP middlewares, supporting both unary and stream RPCs.
+- **api/utils**: Utility functions for sending HTTP and gRPC success/error responses to clients with proper status code management, and JSON unmarshalling from files with support for parsing `time.Duration`.
+- **infrastructure**: Connection management for MongoDB and PostgreSQL, a PostgreSQL migration runner, and a generic MongoDB repository implementation.
+- **mocks**: Mock creation for MongoDB and PostgreSQL repositories to facilitate unit testing.
+- **observability**: New Relic integration for APM and log forwarding, including a singleton logger.
+- **repository**: Interface for the Repository pattern defining CRUD operations, designed for multiple storage implementations and extensibility through composition.
+- **wrappers**: Custom type wrappers including specialized error types for simpler error codes mapping and a gRPC Server Stream wrapper for enabling context injection.
+- **testutils**: Convinient utility functions to simplify testing.
 
-## Usage steps
-1. Create an empty repository and clone it.
-2. Execute:
+## Installation
 ```
-go mod init github.com/{username}/{repository_name}
-go get github.com/sergicanet9/scv-go-tools/v3
+go get github.com/sergicanet9/scv-go-tools/v4
 ```
 
 ## Run all unit tests with code coverage
@@ -34,7 +32,7 @@ make cover
 ```
 
 ## Usage examples
-[go-hexagonal-restapi](https://github.com/sergicanet9/go-hexagonal-api)
+Check out [go-hexagonal-api](https://github.com/sergicanet9/go-hexagonal-api) for practical examples of how to use the library with both HTTP and gRPC APIs.
 
 ## Author
 Sergi Canet Vela

@@ -4,24 +4,16 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/sergicanet9/scv-go-tools/v3/api/utils"
+	"github.com/sergicanet9/scv-go-tools/v4/api/utils"
 )
 
-// Recover is a middleware function to defer and return an error response in case of panic during the handler execution
+// Recover is an HTTP middleware that recovers from panics, logs the error and writes to the response body of the incomming call
 func Recover(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
-			var err error
-			if rec := recover(); rec != nil {
-				switch t := rec.(type) {
-				case error:
-					err = t
-				case string:
-					err = fmt.Errorf("%s", t)
-				default:
-					err = fmt.Errorf("unknown error ocurred")
-				}
-				utils.ResponseError(w, r, nil, err)
+			if err := recover(); err != nil {
+				panicErr := fmt.Errorf("recovered from panic during HTTP call %s %s, Panic: %v", r.Method, r.URL.Path, err)
+				utils.ErrorResponse(w, panicErr)
 			}
 		}()
 		next.ServeHTTP(w, r)
