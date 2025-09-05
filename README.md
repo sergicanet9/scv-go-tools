@@ -19,6 +19,7 @@ Toolkit for building REST and gRPC APIs in Go, structured around clean architect
 | testutils         | Convenient utility functions to simplify testing.                                                                                                                                 |
 
 ## ⚙️ Installation
+Run the following command inside a Go project to add the library as a dependency:
 ```
 go get github.com/sergicanet9/scv-go-tools/v4
 ```
