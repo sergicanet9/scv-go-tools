@@ -5,37 +5,40 @@
 
 Toolkit for building REST and gRPC APIs in Go, structured around clean architecture principles.
 
-## Included packages
-- **api/middlewares**: HTTP middlewares for panic recovery, JWT authentication, role-based authorization, and request/response logging.
-- **api/interceptors**: gRPC interceptors providing equivalent functionality to HTTP middlewares, supporting both unary and stream RPCs.
-- **api/utils**: Utility functions for sending HTTP and gRPC success/error responses to clients with proper status code management, and JSON unmarshalling from files with support for parsing `time.Duration`.
-- **infrastructure**: Connection management for MongoDB and PostgreSQL, a PostgreSQL migration runner, and a generic MongoDB repository implementation.
-- **mocks**: Mock creation for MongoDB and PostgreSQL repositories to facilitate unit testing.
-- **observability**: New Relic integration for APM and log forwarding, including a singleton logger.
-- **repository**: Interface for the Repository pattern defining CRUD operations, designed for multiple storage implementations and extensibility through composition.
-- **wrappers**: Custom type wrappers including specialized error types for simpler error codes mapping and a gRPC Server Stream wrapper for enabling context injection.
-- **testutils**: Convinient utility functions to simplify testing.
+## 🚀 Included packages
+| Package           | Description                                                                                                                                                                       |
+|------------------ |---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| api/middlewares   | HTTP middlewares for panic recovery, JWT authentication, role-based authorization, and request/response logging.                                                                  |
+| api/interceptors  | gRPC interceptors providing equivalent functionality to HTTP middlewares, supporting both unary and stream gRPC calls.                                                            |
+| api/utils         | Utility functions for sending HTTP and gRPC success/error responses with proper status code management, and JSON unmarshalling from files with support for parsing time.Duration. |
+| infrastructure    | Connection management for MongoDB and PostgreSQL, a PostgreSQL migration runner, and a generic MongoDB repository implementation.                                                 |
+| mocks             | Mock creation for MongoDB and PostgreSQL repositories to facilitate unit testing.                                                                                                 |
+| observability     | New Relic integration for APM and log forwarding, including a singleton logger.                                                                                                   |
+| repository        | Interface for the Repository pattern defining CRUD operations, designed for multiple storage implementations and extensibility through composition.                               |
+| wrappers          | Custom type wrappers including specialized error types for simpler error code mapping and a gRPC Server Stream wrapper for enabling context injection.                            |
+| testutils         | Convenient utility functions to simplify testing.                                                                                                                                 |
 
-## Installation
+## ⚙️ Installation
 ```
 go get github.com/sergicanet9/scv-go-tools/v4
 ```
 
-## Run all unit tests with code coverage
+## ✅ Testing
+### Run all unit tests with code coverage
 ```
 make test-unit
 ```
 
-## View coverage report
+### View coverage report
 ```
 make cover
 ```
 
-## Usage examples
+## 📝 Usage examples
 Check out [go-hexagonal-api](https://github.com/sergicanet9/go-hexagonal-api) for practical examples of how to use the library with both HTTP and gRPC APIs.
 
-## Author
+## ✍️ Author
 Sergi Canet Vela
 
-## License
+## ⚖️ License
 This project is licensed under the terms of the MIT license.
