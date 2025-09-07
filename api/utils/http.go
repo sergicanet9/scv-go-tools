@@ -26,6 +26,8 @@ func ErrorResponse(w http.ResponseWriter, err error) {
 		statusCode = http.StatusUnauthorized
 	case errors.Is(err, wrappers.UnauthenticatedErr):
 		statusCode = http.StatusForbidden
+	case errors.Is(err, wrappers.ServiceUnavailableErr):
+		statusCode = http.StatusServiceUnavailable
 	default:
 		statusCode = http.StatusInternalServerError
 	}

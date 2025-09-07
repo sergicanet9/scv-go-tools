@@ -23,6 +23,8 @@ func ToGRPC(err error) error {
 		return status.Error(codes.Unauthenticated, err.Error())
 	case errors.Is(err, wrappers.UnauthenticatedErr):
 		return status.Error(codes.PermissionDenied, err.Error())
+	case errors.Is(err, wrappers.ServiceUnavailableErr):
+		return status.Error(codes.Unavailable, err.Error())
 	default:
 		return status.Error(codes.Internal, err.Error())
 	}

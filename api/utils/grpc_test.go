@@ -21,6 +21,7 @@ func TestToGRPC(t *testing.T) {
 		{"invalid input", wrappers.ValidationErr, codes.InvalidArgument},
 		{"unauthorized", wrappers.UnauthorizedErr, codes.Unauthenticated},
 		{"unauthenticated", wrappers.UnauthenticatedErr, codes.PermissionDenied},
+		{"unavailable", wrappers.ServiceUnavailableErr, codes.Unavailable},
 		{"unknown error", errors.New("test-error"), codes.Internal},
 	}
 
