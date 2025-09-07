@@ -33,7 +33,7 @@ func Logger(skippedPaths ...string) func(next http.Handler) http.Handler {
 			start := time.Now()
 
 			for _, prefix := range skippedPaths {
-				if strings.HasPrefix(r.URL.Path, prefix) {
+				if strings.Contains(r.URL.Path, prefix) {
 					next.ServeHTTP(w, r)
 					return
 				}
