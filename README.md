@@ -36,7 +36,7 @@ make cover
 ```
 
 ## 📝 Usage examples
-Check out [go-hexagonal-api](https://github.com/sergicanet9/go-hexagonal-api) for practical examples of how to use the library with both HTTP and gRPC APIs.
+Check out [go-hexagonal-api](https://github.com/sergicanet9/go-hexagonal-api) and [go-microservices-demo](https://github.com/sergicanet9/go-microservices-demo) for practical examples of how to use the library with both HTTP and gRPC APIs.
 
 ## ✍️ Author
 Sergi Canet Vela
