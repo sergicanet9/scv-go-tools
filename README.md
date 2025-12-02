@@ -1,6 +1,6 @@
 # scv-go-tools v4
 ![CI](https://github.com/sergicanet9/scv-go-tools/actions/workflows/ci.yml/badge.svg)
-![Coverage](https://img.shields.io/badge/Coverage-80.1%25-brightgreen)
+![Coverage](https://img.shields.io/badge/Coverage-93.9%25-brightgreen)
 [![Go Reference](https://pkg.go.dev/badge/github.com/sergicanet9/scv-go-tools/v4.svg)](https://pkg.go.dev/github.com/sergicanet9/scv-go-tools/v4)
 
 Toolkit for building REST and gRPC APIs in Go, structured around clean architecture principles.
